@@ -1,0 +1,46 @@
+- name: sync nova db
+  run_once: yes
+  command: nova-manage db sync
+  when: inventory_hostname in groups[openstack_group_nova_controller]
+
+- name: restart nova-api
+  service:
+    name: nova-api
+    state: restarted
+  failed_when: false
+
+- name: restart nova-cert
+  service:
+    name: nova-cert
+    state: restarted
+  failed_when: false
+
+- name: restart nova-compute
+  service:
+    name: nova-compute
+    state: restarted
+  failed_when: false
+
+- name: restart nova-conductor
+  service:
+    name: nova-conductor
+    state: restarted
+  failed_when: false
+
+- name: restart nova-consoleauth
+  service:
+    name: nova-consoleauth
+    state: restarted
+  failed_when: false
+
+- name: restart nova-novncproxy
+  service:
+    name: nova-novncproxy
+    state: restarted
+  failed_when: false
+
+- name: restart nova-scheduler
+  service:
+    name: nova-scheduler
+    state: restarted
+  failed_when: false

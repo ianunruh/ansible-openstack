@@ -1,0 +1,9 @@
+- include: install.yml
+  tags:
+    - heat
+    - heat-install
+
+- include: configure.yml
+  tags:
+    - heat
+    - heat-configure

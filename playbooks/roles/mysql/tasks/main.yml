@@ -1,0 +1,9 @@
+- include: install.yml
+  tags:
+    - mysql
+    - mysql-install
+
+- include: configure.yml
+  tags:
+    - mysql
+    - mysql-configure

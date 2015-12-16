@@ -1,0 +1,9 @@
+- include: install.yml
+  tags:
+    - memcached
+    - memcached-install
+
+- include: configure.yml
+  tags:
+    - memcached
+    - memcached-configure

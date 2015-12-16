@@ -1,0 +1,8 @@
+- name: configure horizon
+  template:
+    src: local_settings.py.j2
+    dest: /etc/openstack-dashboard/local_settings.py
+  notify:
+    - restart apache2
+
+- meta: flush_handlers

@@ -1,0 +1,14 @@
+- name: install ubuntu cloud keyring
+  apt:
+    pkg: ubuntu-cloud-keyring
+    state: present
+
+- name: add apt repository
+  apt_repository:
+    repo: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu trusty-updates/liberty main"
+    update_cache: yes
+
+- name: install openstack client
+  apt:
+    pkg: python-openstackclient
+    state: present

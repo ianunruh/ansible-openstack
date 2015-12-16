@@ -1,0 +1,76 @@
+#!/usr/bin/env python
+import keystoneclient
+from os_client_config import OpenStackConfig
+
+def main():
+    module = AnsibleModule(
+        argument_spec=dict(
+            name=dict(required=True),
+            password=dict(),
+            default_project=dict(),
+            default_project_domain=dict(default='default'),
+            domain=dict(default='default'),
+            force=dict(type='bool', default=False),
+            enabled=dict(type='bool', default=True),
+            state=dict(choices=['present', 'absent'], default='present'),
+            client_config_name=dict(default='default'),
+        ),
+        supports_check_mode=True,
+    )
+
+    name = module.params['name']
+    password = module.params['password']
+    default_project_name = module.params['default_project']
+    default_project_domain_name = module.params['default_project_domain']
+    domain_name = module.params['domain']
+    force = module.params['force']
+    enabled = module.params['enabled']
+    state = module.params['state']
+    client_config_name = module.params['client_config_name']
+
+    config = OpenStackConfig().get_one_cloud(client_config_name)
+
+    keystone = keystoneclient.v3.Client(**config.get_auth_args())
+
+    domain = keystone.domains.find(name=domain_name)
+
+    if default_project_name:
+        default_project_domain = keystone.domains.find(name=default_project_domain_name)
+        default_project = keystone.projects.find(name=default_project_name, domain=default_project_domain)
+        default_project_id = default_project.id
+    else:
+        default_project = None
+        default_project_id = None
+
+    try:
+        user = keystone.users.find(name=name, domain=domain)
+    except keystoneclient.exceptions.NotFound:
+        user = None
+
+    changed = False
+
+    if state == 'present':
+        if user:
+            if force or user.enabled != enabled:
+                if not module.check_mode:
+                    user = keystone.users.update(user, password=password, enabled=enabled)
+
+                changed = True
+        else:
+            if not module.check_mode:
+                user = keystone.users.create(name=name, domain=domain, password=password,
+                                             default_project=default_project, enabled=enabled)
+
+            changed = True
+    elif project:
+        if not module.check_mode:
+            user.delete()
+
+        changed = True
+
+    module.exit_json(changed=changed)
+
+from ansible.module_utils.basic import *
+
+if __name__ == '__main__':
+    main()

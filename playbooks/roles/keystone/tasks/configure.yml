@@ -1,0 +1,42 @@
+- name: ensure eventlet server stopped and disabled
+  service:
+    name: keystone
+    enabled: no
+    state: stopped
+
+- name: configure apache2
+  template:
+    src: wsgi-keystone.conf.j2
+    dest: /etc/apache2/sites-enabled/wsgi-keystone.conf
+  notify:
+    - restart apache2
+
+- name: configure keystone
+  template:
+    src: keystone.conf.j2
+    dest: /etc/keystone/keystone.conf
+  notify:
+    - sync keystone db
+    - restart apache2
+
+- meta: flush_handlers
+
+- name: ensure client config directory
+  file:
+    path: /etc/openstack
+    state: directory
+
+- name: configure clients
+  template:
+    src: clouds.yaml.j2
+    dest: /etc/openstack/clouds.yaml
+
+- name: configure environment script
+  template:
+    src: openrc.j2
+    dest: /root/openrc
+    owner: root
+    group: root
+    mode: 0640
+
+- include: bootstrap.yml

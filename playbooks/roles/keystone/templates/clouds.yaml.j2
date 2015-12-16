@@ -1,0 +1,26 @@
+clouds:
+  default-admin-token:
+    auth:
+      endpoint: {{ keystone_endpoint_identity_admin|to_json }}
+      token: {{ keystone_admin_token|to_json }}
+    identity_api_version: "3"
+    image_api_version: "2"
+  default-admin-domain:
+    auth:
+      auth_url: {{ keystone_endpoint_identity_admin|to_json }}
+      username: admin
+      password: {{ keystone_admin_password|to_json }}
+      user_domain_name: default
+      domain_name: default
+    identity_api_version: "3"
+    image_api_version: "2"
+  default:
+    auth:
+      auth_url: {{ keystone_endpoint_identity_admin|to_json }}
+      username: admin
+      password: {{ keystone_admin_password|to_json }}
+      user_domain_name: default
+      project_name: admin
+      project_domain_name: default
+    identity_api_version: "3"
+    image_api_version: "2"

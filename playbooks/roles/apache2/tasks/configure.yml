@@ -1,0 +1,8 @@
+- name: configure ports
+  template:
+    src: ports.conf.j2
+    dest: /etc/apache2/ports.conf
+  notify:
+    - restart apache2
+
+- meta: flush_handlers

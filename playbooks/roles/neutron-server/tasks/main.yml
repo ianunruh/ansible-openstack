@@ -1,0 +1,7 @@
+- name: install neutron-server
+  apt:
+    pkg: neutron-server
+    state: present
+  tags:
+    - neutron
+    - neutron-install

@@ -1,0 +1,19 @@
+- name: add apt key
+  apt_key:
+    id: 1C4CBDCDCD2EFD2A
+    keyserver: keys.gnupg.net
+
+- name: add apt repository
+  apt_repository:
+    repo: deb http://repo.percona.com/apt trusty main
+    update_cache: yes
+
+- name: install percona xtradb cluster
+  apt:
+    pkg: percona-xtradb-cluster-56
+    state: present
+
+- name: install python client
+  apt:
+    pkg: python-mysqldb
+    state: present

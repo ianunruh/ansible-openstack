@@ -1,0 +1,14 @@
+- include: install.yml
+  tags:
+    - nova
+    - nova-install
+
+- include: ssh-keys.yml
+  tags:
+    - nova
+    - nova-ssh-keys
+
+- include: configure.yml
+  tags:
+    - nova
+    - nova-configure

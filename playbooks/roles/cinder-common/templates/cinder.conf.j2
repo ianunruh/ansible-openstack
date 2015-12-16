@@ -1,0 +1,54 @@
+[DEFAULT]
+auth_strategy = keystone
+
+rpc_backend = rabbit
+
+my_ip = {{ openstack_internal_address }}
+
+osapi_volume_listen = {{ cinder_bind_address }}
+
+glance_host = {{ openstack_lb_vip }}
+glance_api_version = 2
+
+volume_driver = cinder.volume.drivers.rbd.RBDDriver
+rbd_pool = volumes
+rbd_user = cinder
+rbd_ceph_conf = /etc/ceph/ceph.conf
+rbd_secret_uuid = {{ cinder_libvirt_ceph_secret_uuid }}
+
+[keymgr]
+{#
+  TODO Remove this workaround once patch makes it into Ubuntu packages
+
+  Without this Nova cannot reach out to Cinder and create volumes because
+  Cinder will return some ambiguous error about volume limits
+  woo openstack
+
+  https://bugzilla.redhat.com/show_bug.cgi?id=1272572
+#}
+encryption_auth_url = http://{{ openstack_lb_vip }}:5000/v3
+
+[database]
+connection = mysql+pymysql://{{ cinder_mysql_user }}:{{ cinder_mysql_password }}@{{ openstack_lb_vip }}/{{ cinder_mysql_db }}
+
+[keystone_authtoken]
+auth_uri = {{ keystone_auth_uri }}
+auth_url = {{ keystone_auth_url }}
+auth_plugin = password
+project_domain_id = default
+user_domain_id = default
+username = {{ cinder_keystone_user }}
+password = {{ cinder_keystone_password }}
+project_name = {{ cinder_keystone_project }}
+
+[oslo_messaging_rabbit]
+rabbit_hosts = {% for host in groups[openstack_group_rabbitmq] -%}
+{{ hostvars[host].ansible_fqdn }}{% if not loop.last %},{% endif %}
+{%- endfor %}
+
+rabbit_userid = {{ cinder_rabbitmq_user }}
+rabbit_password = {{ cinder_rabbitmq_password }}
+rabbit_virtual_host = {{ cinder_rabbitmq_vhost }}
+
+[oslo_concurrency]
+lock_path = /var/lib/cinder/tmp

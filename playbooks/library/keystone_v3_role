@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+import keystoneclient
+from os_client_config import OpenStackConfig
+
+def main():
+    module = AnsibleModule(
+        argument_spec=dict(
+            name=dict(required=True),
+            state=dict(choices=['present', 'absent'], default='present'),
+            client_config_name=dict(default='default'),
+        ),
+        supports_check_mode=True,
+    )
+
+    name = module.params['name']
+    state = module.params['state']
+    client_config_name = module.params['client_config_name']
+
+    config = OpenStackConfig().get_one_cloud(client_config_name)
+
+    keystone = keystoneclient.v3.Client(**config.get_auth_args())
+
+    try:
+        role = keystone.roles.find(name=name)
+    except keystoneclient.exceptions.NotFound:
+        role = None
+
+    changed = False
+
+    if state == 'present':
+        if not role:
+            if not module.check_mode:
+                role = keystone.roles.create(name=name)
+
+            changed = True
+    elif role:
+        if not module.check_mode:
+            role.delete()
+
+        changed = True
+
+    module.exit_json(changed=changed)
+
+from ansible.module_utils.basic import *
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,9 @@
+- include: install.yml
+  tags:
+    - haproxy
+    - haproxy-install
+
+- include: configure.yml
+  tags:
+    - haproxy
+    - haproxy-configure

@@ -1,0 +1,10 @@
+- hosts: haproxy
+  roles:
+    - role: haproxy-service
+      haproxy_service_name: horizon
+      haproxy_service_port: 80
+      haproxy_service_group: horizon
+
+- hosts: horizon
+  roles:
+    - horizon

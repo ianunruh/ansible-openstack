@@ -1,0 +1,12 @@
+- name: ensure rabbitmq stopped
+  service:
+    name: rabbitmq-server
+    state: stopped
+
+- name: ensure all remaining processes killed
+  command: killall -u rabbitmq
+
+- name: nuke mnesia database
+  file:
+    path: /var/lib/rabbitmq/mnesia
+    state: absent

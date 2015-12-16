@@ -1,0 +1,25 @@
+- name: configure neutron
+  template:
+    src: neutron.conf.j2
+    dest: /etc/neutron/neutron.conf
+  notify:
+    - sync neutron db
+    - restart neutron-server
+    - restart neutron-dhcp-agent
+    - restart neutron-l3-agent
+    - restart neutron-metadata-agent
+    - restart neutron-plugin-openvswitch-agent
+
+- name: configure ml2 plugin
+  template:
+    src: ml2_conf.ini.j2
+    dest: /etc/neutron/plugins/ml2/ml2_conf.ini
+  notify:
+    - sync neutron db
+    - restart neutron-server
+    - restart neutron-dhcp-agent
+    - restart neutron-l3-agent
+    - restart neutron-metadata-agent
+    - restart neutron-plugin-openvswitch-agent
+
+- meta: flush_handlers

@@ -1,0 +1,11 @@
+- name: configure heat
+  template:
+    src: heat.conf.j2
+    dest: /etc/heat/heat.conf
+  notify:
+    - sync heat db
+    - restart heat-api
+    - restart heat-api-cfn
+    - restart heat-engine
+
+- meta: flush_handlers

@@ -1,0 +1,24 @@
+- name: create project
+  run_once: yes
+  keystone_v3_project:
+    name: "{{ keystone_project }}"
+    state: present
+    client_config_name: default-admin-token
+
+- name: create user
+  run_once: yes
+  keystone_v3_user:
+    name: "{{ keystone_user }}"
+    password: "{{ keystone_password }}"
+    default_project: admin
+    state: present
+    client_config_name: default-admin-token
+
+- name: grant admin role to user on project
+  run_once: yes
+  keystone_v3_assignment:
+    role: admin
+    user: "{{ keystone_user }}"
+    project: "{{ keystone_project }}"
+    state: present
+    client_config_name: default-admin-token

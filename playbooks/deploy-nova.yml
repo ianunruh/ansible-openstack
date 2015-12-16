@@ -1,0 +1,63 @@
+- hosts: haproxy
+  roles:
+    - role: haproxy-service
+      haproxy_service_name: nova-api
+      haproxy_service_port: 8774
+      haproxy_service_group: nova-controller
+
+    - role: haproxy-service
+      haproxy_service_name: nova-api-metadata
+      haproxy_service_port: 8775
+      haproxy_service_group: nova-controller
+
+    - role: haproxy-service
+      haproxy_service_name: nova-novncproxy
+      haproxy_service_port: 6080
+      haproxy_service_group: nova-controller
+
+- hosts: keystone
+  roles:
+    - name: keystone-service
+      keystone_service_name: nova
+      keystone_service_type: compute
+      keystone_endpoint_public: "{{ nova_keystone_endpoint_compute_public }}"
+      keystone_endpoint_internal: "{{ nova_keystone_endpoint_compute_internal }}"
+      keystone_endpoint_admin: "{{ nova_keystone_endpoint_compute_admin }}"
+
+    - name: keystone-user
+      keystone_user: "{{ nova_keystone_user }}"
+      keystone_password: "{{ nova_keystone_password }}"
+      keystone_project: "{{ nova_keystone_project }}"
+
+- hosts: mysql
+  roles:
+    - name: mysql-service
+      mysql_service_db: "{{ nova_mysql_db }}"
+      mysql_service_user: "{{ nova_mysql_user }}"
+      mysql_service_password: "{{ nova_mysql_password }}"
+
+- hosts: rabbitmq
+  roles:
+    - name: rabbitmq-service
+      rabbitmq_vhost: "{{ nova_rabbitmq_vhost }}"
+      rabbitmq_user: "{{ nova_rabbitmq_user }}"
+      rabbitmq_password: "{{ nova_rabbitmq_password }}"
+
+- hosts: nova-controller
+  roles:
+    - nova-controller
+
+- hosts: ceph-mon
+  tasks:
+    - name: retrieve cinder ceph key
+      run_once: yes
+      command: ceph auth get-key client.cinder
+      register: ceph_cinder_key
+
+- hosts: nova-compute
+  pre_tasks:
+    - name: set cinder ceph key fact
+      set_fact:
+        nova_libvirt_ceph_secret: "{{ hostvars[groups['ceph-mon'][0]].ceph_cinder_key.stdout }}"
+  roles:
+    - nova-compute

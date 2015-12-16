@@ -1,0 +1,4 @@
+- name: install neutron-metadata-agent
+  apt:
+    pkg: neutron-metadata-agent
+    state: present

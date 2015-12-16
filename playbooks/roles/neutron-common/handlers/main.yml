@@ -1,0 +1,37 @@
+- name: sync neutron db
+  run_once: yes
+  command: >
+    neutron-db-manage
+      --config-file /etc/neutron/neutron.conf
+      --config-file /etc/neutron/plugins/ml2/ml2_conf.ini
+      upgrade head
+
+- name: restart neutron-dhcp-agent
+  service:
+    name: neutron-dhcp-agent
+    state: restarted
+  failed_when: false
+
+- name: restart neutron-l3-agent
+  service:
+    name: neutron-l3-agent
+    state: restarted
+  failed_when: false
+
+- name: restart neutron-metadata-agent
+  service:
+    name: neutron-metadata-agent
+    state: restarted
+  failed_when: false
+
+- name: restart neutron-plugin-openvswitch-agent
+  service:
+    name: neutron-plugin-openvswitch-agent
+    state: restarted
+  failed_when: false
+
+- name: restart neutron-server
+  service:
+    name: neutron-server
+    state: restarted
+  failed_when: false

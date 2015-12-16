@@ -1,0 +1,15 @@
+- name: configure glance-api
+  template:
+    src: glance-api.conf.j2
+    dest: /etc/glance/glance-api.conf
+  notify:
+    - sync glance db
+    - restart glance-api
+
+- name: configure glance-registry
+  template:
+    src: glance-registry.conf.j2
+    dest: /etc/glance/glance-registry.conf
+  notify:
+    - sync glance db
+    - restart glance-registry

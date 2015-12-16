@@ -1,0 +1,70 @@
+- hosts: haproxy
+  roles:
+    - role: haproxy-service
+      haproxy_service_name: glance-api
+      haproxy_service_port: 9292
+      haproxy_service_group: glance
+
+    - role: haproxy-service
+      haproxy_service_name: glance-registry
+      haproxy_service_port: 9191
+      haproxy_service_group: glance
+
+- hosts: keystone
+  roles:
+    - name: keystone-service
+      keystone_service_name: glance
+      keystone_service_type: image
+      keystone_endpoint_public: "{{ glance_keystone_endpoint_image_public }}"
+      keystone_endpoint_internal: "{{ glance_keystone_endpoint_image_internal }}"
+      keystone_endpoint_admin: "{{ glance_keystone_endpoint_image_admin }}"
+
+    - name: keystone-user
+      keystone_user: "{{ glance_keystone_user }}"
+      keystone_password: "{{ glance_keystone_password }}"
+      keystone_project: "{{ glance_keystone_project }}"
+
+- hosts: mysql
+  roles:
+    - name: mysql-service
+      mysql_service_db: "{{ glance_mysql_db }}"
+      mysql_service_user: "{{ glance_mysql_user }}"
+      mysql_service_password: "{{ glance_mysql_password }}"
+
+- hosts: ceph-mon
+  tasks:
+    - name: ensure images pool
+      run_once: yes
+      ceph_pool:
+        name: images
+        state: present
+
+    - name: create glance ceph keyring
+      run_once: yes
+      command: >
+        ceph auth get-or-create client.glance
+          mon 'allow r'
+          osd 'allow class-read object_prefix rbd_children, allow rwx pool=images'
+        -o /etc/ceph/ceph.client.glance.keyring
+      args:
+        creates: /etc/ceph/ceph.client.glance.keyring
+
+    - name: fetch glance ceph keyring
+      run_once: yes
+      fetch:
+        src: /etc/ceph/ceph.client.glance.keyring
+        dest: fetch/ceph.client.glance.keyring
+        flat: yes
+
+- hosts: glance
+  roles:
+    - ceph-common
+    - glance
+  post_tasks:
+    - name: copy glance ceph keyring
+      copy:
+        src: fetch/ceph.client.glance.keyring
+        dest: /etc/ceph/ceph.client.glance.keyring
+        owner: glance
+        group: glance
+        mode: 0640

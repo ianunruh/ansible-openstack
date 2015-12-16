@@ -1,0 +1,9 @@
+- include: install.yml
+  tags:
+    - apache2
+    - apache2-install
+
+- include: configure.yml
+  tags:
+    - apache2
+    - apache2-configure

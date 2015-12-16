@@ -1,0 +1,9 @@
+- include: install.yml
+  tags:
+    - horizon
+    - horizon-install
+
+- include: configure.yml
+  tags:
+    - horizon
+    - horizon-configure

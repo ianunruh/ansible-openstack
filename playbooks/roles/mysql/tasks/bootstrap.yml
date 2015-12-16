@@ -1,0 +1,16 @@
+# TODO do more robust check to determine if bootstrap is needed
+- name: check galera state file
+  stat:
+    path: /var/lib/mysql/grastate.dat
+  register: state_result
+
+- name: stop mysql for bootstrap
+  service:
+    name: mysql
+    state: stopped
+  when: not state_result.stat.exists
+
+- name: start mysql for bootstrap
+  command: service mysql bootstrap-pxc
+  register: mysql_bootstrap
+  when: not state_result.stat.exists

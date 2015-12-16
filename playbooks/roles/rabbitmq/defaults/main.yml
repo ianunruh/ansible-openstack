@@ -1,0 +1,6 @@
+rabbitmq_erlang_cookie: cookie
+
+rabbitmq_clustered: false
+rabbitmq_cluster_partition_handling: pause_minority
+
+rabbitmq_admin_password: password

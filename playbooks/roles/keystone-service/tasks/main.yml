@@ -1,0 +1,21 @@
+- name: create service
+  run_once: yes
+  keystone_v3_service:
+    name: "{{ keystone_service_name }}"
+    type: "{{ keystone_service_type }}"
+    state: present
+    client_config_name: default-admin-token
+
+- name: create endpoint
+  run_once: yes
+  keystone_v3_endpoint:
+    service: "{{ keystone_service_name }}"
+    interface: "{{ item.key }}"
+    region: "{{ openstack_region }}"
+    url: "{{ item.value }}"
+    state: present
+    client_config_name: default-admin-token
+  with_dict:
+    public: "{{ keystone_endpoint_public }}"
+    internal: "{{ keystone_endpoint_internal }}"
+    admin: "{{ keystone_endpoint_admin }}"

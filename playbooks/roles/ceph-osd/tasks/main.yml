@@ -1,0 +1,25 @@
+- name: install ceph
+  apt:
+    pkg: ceph
+    state: present
+
+- name: copy osd bootstrap keyring
+  copy:
+    src: fetch/ceph.client.bootstrap-osd.keyring
+    dest: /var/lib/ceph/bootstrap-osd/ceph.keyring
+    owner: ceph
+    group: ceph
+    mode: 0640
+
+- name: ensure osd directory
+  file:
+    path: "{{ item }}"
+    owner: ceph
+    group: ceph
+    state: directory
+  with_items: ceph_osd_directories
+
+- name: prepare and activate osd directory
+  ceph_osd:
+    data_path: "{{ item }}"
+  with_items: ceph_osd_directories

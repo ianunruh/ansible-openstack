@@ -1,0 +1,6 @@
+glance_bind_address: "{{ openstack_internal_address }}"
+
+glance_default_store: rbd
+glance_stores:
+  - rbd
+  - http

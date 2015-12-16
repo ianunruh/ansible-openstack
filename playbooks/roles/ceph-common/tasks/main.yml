@@ -1,0 +1,9 @@
+- include: install.yml
+  tags:
+    - ceph
+    - ceph-install
+
+- include: configure.yml
+  tags:
+    - ceph
+    - ceph-configure

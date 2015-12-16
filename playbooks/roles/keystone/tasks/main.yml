@@ -1,0 +1,9 @@
+- include: install.yml
+  tags:
+    - keystone
+    - keystone-install
+
+- include: configure.yml
+  tags:
+    - keystone
+    - keystone-configure

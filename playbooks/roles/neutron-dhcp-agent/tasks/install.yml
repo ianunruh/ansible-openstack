@@ -1,0 +1,4 @@
+- name: install neutron-dhcp-agent
+  apt:
+    pkg: neutron-dhcp-agent
+    state: present

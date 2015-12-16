@@ -1,0 +1,10 @@
+- name: wait for osd bootstrap keyring to be ready
+  wait_for:
+    path: /var/lib/ceph/bootstrap-osd/ceph.keyring
+
+- name: fetch osd bootstrap keyring
+  run_once: yes
+  fetch:
+    src: /var/lib/ceph/bootstrap-osd/ceph.keyring
+    dest: fetch/ceph.client.bootstrap-osd.keyring
+    flat: yes

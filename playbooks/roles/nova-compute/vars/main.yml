@@ -1,0 +1,7 @@
+nova_compute_packages:
+  qemu:
+    - nova-compute-qemu
+    - sysfsutils
+  kvm:
+    - nova-compute-kvm
+    - sysfsutils

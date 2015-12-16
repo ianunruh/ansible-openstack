@@ -1,0 +1,3 @@
+haproxy_service_mode: tcp
+haproxy_service_balance: roundrobin
+haproxy_service_options: []

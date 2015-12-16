@@ -1,0 +1,3 @@
+{% if apt_proxy_url is defined %}
+Acquire::http::Proxy "{{ apt_proxy_url }}";
+{% endif %}

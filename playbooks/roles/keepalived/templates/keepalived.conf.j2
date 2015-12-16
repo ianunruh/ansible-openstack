@@ -1,0 +1,23 @@
+vrrp_script haproxy_alive {
+  script "killall -0 haproxy"
+  interval 2
+}
+
+vrrp_instance haproxy_vip {
+  state EQUAL
+  priority 100
+  interface {{ openstack_internal_interface }}
+  virtual_router_id {{ keepalived_virtual_router_id }}
+  advert_int 1
+  nopreempt
+  authentication {
+    auth_type PASS
+    auth_pass {{ keepalived_auth_pass }}
+  }
+  virtual_ipaddress {
+    {{ openstack_lb_vip }}
+  }
+  track_script {
+    haproxy_alive
+  }
+}

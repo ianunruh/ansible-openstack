@@ -1,0 +1,11 @@
+ceph_group_mon: ceph-mon
+
+ceph_fsid: ffffffff-ffff-ffff-ffff-ffffffffffff
+ceph_public_network: null
+ceph_cluster_network: null
+
+ceph_osd_pool_default_size: 2
+
+ceph_osd_journal_size: 5120
+
+ceph_mon_address: "{{ ansible_default_ipv4.hostname }}"

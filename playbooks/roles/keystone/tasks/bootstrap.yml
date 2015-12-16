@@ -1,0 +1,69 @@
+- name: create region
+  run_once: yes
+  keystone_v3_region:
+    name: "{{ openstack_region }}"
+    state: present
+    client_config_name: default-admin-token
+
+- name: create admin role
+  run_once: yes
+  keystone_v3_role:
+    name: admin
+    state: present
+    client_config_name: default-admin-token
+
+- name: create admin project
+  run_once: yes
+  keystone_v3_project:
+    name: admin
+    state: present
+    client_config_name: default-admin-token
+
+- name: create admin user
+  run_once: yes
+  keystone_v3_user:
+    name: admin
+    password: "{{ keystone_admin_password }}"
+    default_project: admin
+    state: present
+    client_config_name: default-admin-token
+
+- name: grant admin role to admin user on default domain
+  run_once: yes
+  keystone_v3_assignment:
+    role: admin
+    user: admin
+    domain: default
+    state: present
+    client_config_name: default-admin-token
+
+- name: grant admin role to admin user on admin project
+  run_once: yes
+  keystone_v3_assignment:
+    role: admin
+    user: admin
+    project: admin
+    state: present
+    client_config_name: default-admin-token
+
+- name: create keystone service
+  run_once: yes
+  keystone_v3_service:
+    name: keystone
+    type: identity
+    state: present
+    client_config_name: default-admin-token
+
+- name: create keystone endpoint
+  run_once: yes
+  keystone_v3_endpoint:
+    service: keystone
+    interface: "{{ item.key }}"
+    region: "{{ openstack_region }}"
+    url: "{{ item.value }}"
+    state: present
+    client_config_name: default-admin-token
+  with_dict:
+    public: "{{ keystone_endpoint_identity_public }}"
+    internal: "{{ keystone_endpoint_identity_internal }}"
+    admin: "{{ keystone_endpoint_identity_admin }}"

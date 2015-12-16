@@ -1,0 +1,11 @@
+- name: configure cinder
+  template:
+    src: cinder.conf.j2
+    dest: /etc/cinder/cinder.conf
+  notify:
+    - sync cinder db
+    - restart cinder-api
+    - restart cinder-scheduler
+    - restart cinder-volume
+
+- meta: flush_handlers

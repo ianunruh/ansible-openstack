@@ -1,0 +1,8 @@
+neutron_ovs_bridge_mappings: []
+
+neutron_ovs_tunnel_types:
+  - vxlan
+
+neutron_prevent_arp_spoofing: true
+
+neutron_ovs_tunnel_address: "{{ openstack_internal_address }}"

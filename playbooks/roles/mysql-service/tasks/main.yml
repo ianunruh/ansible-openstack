@@ -1,0 +1,14 @@
+- name: create database
+  run_once: yes
+  mysql_db:
+    name: "{{ mysql_service_db }}"
+    state: present
+
+- name: create user
+  run_once: yes
+  mysql_user:
+    name: "{{ mysql_service_user }}"
+    host: "%"
+    password: "{{ mysql_service_password }}"
+    priv: "{{ mysql_service_db }}.*:ALL"
+    state: present

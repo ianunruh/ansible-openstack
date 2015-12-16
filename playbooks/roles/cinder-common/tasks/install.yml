@@ -1,0 +1,4 @@
+- name: install cinder-common
+  apt:
+    pkg: cinder-common
+    state: present

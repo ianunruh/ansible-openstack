@@ -1,0 +1,68 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "boxcutter/ubuntu1404"
+
+  config.hostmanager.enabled = true
+
+  config.vm.define "controller1" do |box|
+    box.vm.hostname = "controller1"
+    box.vm.network "private_network", ip: "10.9.0.101"
+  end
+
+  config.vm.define "controller2" do |box|
+    box.vm.hostname = "controller2"
+    box.vm.network "private_network", ip: "10.9.0.102"
+  end
+
+  config.vm.define "controller3" do |box|
+    box.vm.hostname = "controller3"
+    box.vm.network "private_network", ip: "10.9.0.103"
+  end
+
+  config.vm.define "compute1" do |box|
+    box.vm.hostname = "compute1"
+    box.vm.network "private_network", ip: "10.9.0.201"
+
+    box.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+    end
+
+    box.vm.provision "ansible" do |ansible|
+      ansible.playbook = "playbook.yml"
+      ansible.limit = "all"
+
+      ansible.groups = {
+        "controller" => ["controller1", "controller2", "controller3"],
+        "compute" => ["compute1"],
+        "storage" => ["compute1"],
+
+        "memcached:children" => ["controller"],
+        "rabbitmq:children" => ["controller"],
+        "mysql:children" => ["controller"],
+        "haproxy:children" => ["controller"],
+        "keystone:children" => ["controller"],
+        "glance:children" => ["controller"],
+        "ceph-mon:children" => ["controller"],
+        "ceph-osd:children" => ["storage"],
+        "nova-controller:children" => ["controller"],
+        "nova-compute:children" => ["compute"],
+        "neutron-controller:children" => ["controller"],
+        "neutron-network:children" => ["controller"],
+        "horizon:children" => ["controller"],
+        "cinder-controller:children" => ["controller"],
+        "cinder-volume:children" => ["controller"],
+        "heat:children" => ["controller"],
+      }
+    end
+  end
+
+  config.vm.provider "virtualbox" do |v|
+    v.cpus = 2
+    v.memory = 3072
+
+    # Workaround for slow DNS resolution on OS X hosts
+    v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+  end
+end

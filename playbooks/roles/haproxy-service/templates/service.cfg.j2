@@ -1,0 +1,11 @@
+listen {{ haproxy_service_name }}
+  bind {{ openstack_lb_vip }}:{{ haproxy_service_port }}
+  mode {{ haproxy_service_mode }}
+  balance {{ haproxy_service_balance }}
+  {% for option in haproxy_service_options %}
+  option {{ option }}
+  {% endfor %}
+
+  {% for host in groups[haproxy_service_group] %}
+  server {{ host }} {{ hostvars[host].openstack_internal_address }}:{{ haproxy_service_port }} check
+  {% endfor %}

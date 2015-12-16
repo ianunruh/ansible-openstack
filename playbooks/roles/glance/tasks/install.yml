@@ -1,0 +1,4 @@
+- name: install glance
+  apt:
+    pkg: glance
+    state: present

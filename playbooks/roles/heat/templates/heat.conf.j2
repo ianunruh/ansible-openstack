@@ -1,0 +1,47 @@
+[DEFAULT]
+rpc_backend = rabbit
+
+heat_metadata_server_url = http://{{ openstack_lb_vip }}:8000
+heat_waitcondition_server_url = http://{{ openstack_lb_vip }}:8000/v1/waitcondition
+
+stack_domain_admin = {{ heat_keystone_domain_admin_user }}
+stack_domain_admin_password = {{ heat_keystone_domain_admin_password }}
+stack_user_domain_name = {{ heat_keystone_user_domain_name }}
+
+[database]
+connection = mysql+pymysql://{{ heat_mysql_user }}:{{ heat_mysql_password }}@{{ openstack_lb_vip }}/{{ heat_mysql_db }}
+
+[keystone_authtoken]
+auth_uri = {{ keystone_auth_uri }}
+auth_url = {{ keystone_auth_url }}
+auth_plugin = password
+project_domain_id = default
+user_domain_id = default
+project_name = {{ heat_keystone_project }}
+username = {{ heat_keystone_user }}
+password = {{ heat_keystone_password }}
+
+[trustee]
+auth_uri = {{ keystone_auth_uri }}
+auth_url = {{ keystone_auth_url }}
+auth_plugin = password
+project_domain_id = default
+user_domain_id = default
+project_name = {{ heat_keystone_project }}
+username = {{ heat_keystone_user }}
+password = {{ heat_keystone_password }}
+
+[clients_keystone]
+auth_uri = {{ keystone_auth_uri }}
+
+[ec2authtoken]
+auth_uri = {{ keystone_auth_uri }}
+
+[oslo_messaging_rabbit]
+rabbit_hosts = {% for host in groups[openstack_group_rabbitmq] -%}
+{{ hostvars[host].ansible_fqdn }}{% if not loop.last %},{% endif %}
+{%- endfor %}
+
+rabbit_userid = {{ heat_rabbitmq_user }}
+rabbit_password = {{ heat_rabbitmq_password }}
+rabbit_virtual_host = {{ heat_rabbitmq_vhost }}

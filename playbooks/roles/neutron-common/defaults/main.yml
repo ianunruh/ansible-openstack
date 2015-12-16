@@ -1,0 +1,32 @@
+neutron_service_plugins:
+  - router
+
+neutron_dhcp_agents: 2
+neutron_dhcp_auto_failover: true
+
+neutron_l3_auto_failover: false
+
+neutron_l3_ha: false
+neutron_l3_max_agents: 3
+neutron_l3_min_agents: 2
+
+neutron_l3_distributed: false
+
+neutron_ml2_mechanism_drivers:
+  - openvswitch
+  - l2population
+
+neutron_ml2_type_drivers:
+  - flat
+  - vlan
+  - vxlan
+
+neutron_ml2_tenant_network_types:
+  - vxlan
+
+neutron_ml2_extension_drivers:
+  - port_security
+
+neutron_ml2_flat_networks: []
+neutron_ml2_vxlan_ranges:
+  - 10000:20000

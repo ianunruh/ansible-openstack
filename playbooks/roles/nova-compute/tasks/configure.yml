@@ -1,0 +1,25 @@
+- name: configure nova-compute
+  template:
+    src: nova-compute.conf.j2
+    dest: /etc/nova/nova-compute.conf
+  notify:
+    - restart nova-compute
+
+- name: configure libvirt-bin
+  copy:
+    src: libvirt-bin
+    dest: /etc/default/libvirt-bin
+  notify:
+    - restart libvirtd
+
+- name: configure libvirtd
+  template:
+    src: libvirtd.conf.j2
+    dest: /etc/libvirt/libvirtd.conf
+  notify:
+    - restart libvirtd
+
+- meta: flush_handlers
+
+- include: libvirt-ceph-secret.yml
+  when: nova_libvirt_ceph_secret is defined

@@ -1,0 +1,4 @@
+dependencies:
+  - openstack-common
+  - ubuntu-cloud-archive
+  - apache2

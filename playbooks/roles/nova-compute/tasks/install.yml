@@ -1,0 +1,5 @@
+- name: install nova-compute
+  apt:
+    pkg: "{{ item }}"
+    state: present
+  with_items: nova_compute_packages[nova_compute_libvirt_virt_type]

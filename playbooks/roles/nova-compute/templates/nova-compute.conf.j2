@@ -1,0 +1,13 @@
+[DEFAULT]
+compute_driver = libvirt.LibvirtDriver
+
+vnc_enabled = True
+vncserver_listen = 0.0.0.0
+vncserver_proxyclient_address = {{ openstack_internal_address }}
+novncproxy_base_url = {{ nova_novncproxy_base_url }}
+
+reserved_host_disk_mb = {{ nova_reserved_host_disk_mb }}
+reserved_host_memory_mb = {{ nova_reserved_host_memory_mb }}
+
+[libvirt]
+virt_type = {{ nova_compute_libvirt_virt_type }}

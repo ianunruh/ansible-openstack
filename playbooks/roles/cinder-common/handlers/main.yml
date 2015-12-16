@@ -1,0 +1,21 @@
+- name: sync cinder db
+  run_once: yes
+  command: cinder-manage db sync
+
+- name: restart cinder-api
+  service:
+    name: cinder-api
+    state: restarted
+  failed_when: false
+
+- name: restart cinder-scheduler
+  service:
+    name: cinder-scheduler
+    state: restarted
+  failed_when: false
+
+- name: restart cinder-volume
+  service:
+    name: cinder-volume
+    state: restarted
+  failed_when: false

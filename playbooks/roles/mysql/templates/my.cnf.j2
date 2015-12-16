@@ -1,0 +1,67 @@
+[client]
+port = 3306
+socket = /var/run/mysqld/mysqld.sock
+
+[mysqld_safe]
+socket = /var/run/mysqld/mysqld.sock
+nice = 0
+
+[mysqld]
+user = mysql
+socket = /var/run/mysqld/mysqld.sock
+pid-file = /var/run/mysqld/mysqld.pid
+port = 3306
+tmpdir = /tmp
+basedir = /usr
+datadir = /var/lib/mysql
+lc-messages-dir = /usr/share/mysql
+skip-external-locking
+
+bind-address = {{ mysql_bind_address }}
+
+max_connections = {{ mysql_max_connections }}
+max_allowed_packet = 16M
+thread_stack = 192K
+thread_cache_size = 8
+query_cache_limit = 1M
+query_cache_size = 16M
+innodb_buffer_pool_size = 100M
+innodb_log_file_size = 64M
+
+log_error = /var/log/mysql/error.log
+
+{% if mysql_ssl_cert_path %}
+ssl-cert = {{ mysql_ssl_cert_path }}
+ssl-key = {{ mysql_ssl_key_path }}
+ssl-ca = {{ mysql_ssl_ca_cert_path }}
+{% endif %}
+
+default-storage-engine = innodb
+innodb_file_per_table
+collation-server = utf8_general_ci
+init-connect = 'SET NAMES utf8'
+character-set-server = utf8
+
+binlog_format = ROW
+expire_logs_days = 10
+max_binlog_size = 100M
+
+{% if mysql_clustered %}
+wsrep_cluster_address = gcomm://{% for host in groups[openstack_group_mysql] %}
+{{ hostvars[host].openstack_internal_address }}{% if not loop.last %},{% endif %}
+{% endfor %}
+
+wsrep_provider = /usr/lib/libgalera_smm.so
+wsrep_slave_threads = 2
+wsrep_sst_method = xtrabackup-v2
+wsrep_sst_auth = {{ mysql_sst_user }}:{{ mysql_sst_password }}
+
+innodb_autoinc_lock_mode = 2
+{% endif %}
+
+[mysqldump]
+quick
+quote-names
+max_allowed_packet = 16M
+
+!includedir /etc/mysql/conf.d/

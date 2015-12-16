@@ -1,0 +1,25 @@
+- name: allow bind to non-local address
+  sysctl:
+    name: net.ipv4.ip_nonlocal_bind
+    value: "1"
+    sysctl_set: yes
+
+- name: add apt key
+  apt_key:
+    id: 1C61B9CD
+    keyserver: keyserver.ubuntu.com
+
+- name: add apt repository
+  apt_repository:
+    repo: deb http://ppa.launchpad.net/vbernat/haproxy-1.6/ubuntu trusty main 
+    update_cache: yes
+
+- name: install haproxy
+  apt:
+    pkg: haproxy
+    state: present
+
+- name: ensure config directory
+  file:
+    path: /etc/haproxy/cfg.d
+    state: directory

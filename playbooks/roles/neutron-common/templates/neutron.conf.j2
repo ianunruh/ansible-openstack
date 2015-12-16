@@ -1,0 +1,64 @@
+[DEFAULT]
+core_plugin = ml2
+service_plugins = {{ neutron_service_plugins|join(',') }}
+allow_overlapping_ips = True
+
+rpc_backend = rabbit
+auth_strategy = keystone
+
+notify_nova_on_port_status_changes = True
+notify_nova_on_port_data_changes = True
+nova_url = http://{{ openstack_lb_vip }}:8774/v2
+
+{% if neutron_l3_ha %}
+l3_ha = True
+{% endif %}
+{% if neutron_l3_auto_failover %}
+allow_automatic_l3agent_failover = True
+{% endif %}
+max_l3_agents_per_router = {{ neutron_l3_max_agents }}
+min_l3_agents_per_router = {{ neutron_l3_min_agents }}
+router_distributed = {{ neutron_l3_distributed }}
+
+dhcp_agents_per_network = {{ neutron_dhcp_agents }}
+{% if neutron_dhcp_auto_failover %}
+allow_automatic_dhcp_failover = True
+{% endif %}
+
+[agent]
+root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
+
+[database]
+connection = mysql+pymysql://{{ neutron_mysql_user }}:{{ neutron_mysql_password }}@{{ openstack_lb_vip }}/{{ neutron_mysql_db }}
+
+[keystone_authtoken]
+auth_uri = {{ keystone_auth_uri }}
+auth_url = {{ keystone_auth_url }}
+auth_plugin = password
+project_domain_id = default
+user_domain_id = default
+project_name = {{ neutron_keystone_project }}
+username = {{ neutron_keystone_user }}
+password = {{ neutron_keystone_password }}
+
+[nova]
+auth_url = {{ keystone_auth_url }}
+auth_plugin = password
+project_domain_id = default
+user_domain_id = default
+region_name = {{ openstack_region }}
+username = {{ nova_keystone_user }}
+password = {{ nova_keystone_password }}
+project_name = {{ nova_keystone_project }}
+
+[oslo_messaging_rabbit]
+rabbit_hosts = {% for host in groups[openstack_group_rabbitmq] -%}
+{{ hostvars[host].ansible_fqdn }}{% if not loop.last %},{% endif %}
+{%- endfor %}
+
+rabbit_userid = {{ neutron_rabbitmq_user }}
+rabbit_password = {{ neutron_rabbitmq_password }}
+rabbit_virtual_host = {{ neutron_rabbitmq_vhost }}
+
+[oslo_concurrency]
+lock_path = $state_path/lock

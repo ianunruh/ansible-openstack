@@ -1,0 +1,76 @@
+[DEFAULT]
+logdir = /var/log/nova
+lock_path = /var/lock/nova
+state_path = /var/lib/nova
+
+auth_strategy = keystone
+rpc_backend = rabbit
+
+my_ip = {{ openstack_internal_address }}
+
+host = {{ ansible_fqdn }}
+
+network_api_class = nova.network.neutronv2.api.API
+security_group_api = neutron
+linuxnet_interface_driver = nova.network.linux_net.LinuxOVSInterfaceDriver
+firewall_driver = nova.virt.firewall.NoopFirewallDriver
+
+enabled_apis = osapi_compute, metadata
+metadata_listen = {{ nova_bind_address }}
+osapi_compute_listen = {{ nova_bind_address }}
+
+scheduler_default_filters = {{ nova_scheduler_default_filters|join(',') }}
+cpu_allocation_ratio = {{ nova_cpu_allocation_ratio }}
+disk_allocation_ratio = {{ nova_disk_allocation_ratio }}
+ram_allocation_ratio = {{ nova_ram_allocation_ratio }}
+ram_weight_multiplier = {{ nova_ram_weight_multiplier }}
+
+novncproxy_host = {{ nova_bind_address }}
+
+memcached_servers = {% for host in groups[openstack_group_memcached] -%}
+{{ hostvars[host].ansible_fqdn }}{% if not loop.last %},{% endif %}
+{%- endfor %}
+
+{% if inventory_hostname in groups[openstack_group_nova_controller] %}
+[database]
+connection = mysql+pymysql://{{ nova_mysql_user }}:{{ nova_mysql_password }}@{{ openstack_lb_vip }}/{{ nova_mysql_db }}
+{% endif %}
+
+[glance]
+host = {{ openstack_lb_vip }}
+
+[keystone_authtoken]
+auth_uri = {{ keystone_auth_uri }}
+auth_url = {{ keystone_auth_url }}
+auth_plugin = password
+project_domain_id = default
+user_domain_id = default
+project_name = {{ nova_keystone_project }}
+username = {{ nova_keystone_user }}
+password = {{ nova_keystone_password }}
+
+[neutron]
+url = {{ neutron_keystone_endpoint_network_internal }}
+auth_url = {{ keystone_auth_url }}
+auth_plugin = password
+project_domain_id = default
+user_domain_id = default
+region_name = {{ openstack_region }}
+project_name = {{ neutron_keystone_project }}
+username = {{ neutron_keystone_user }}
+password = {{ neutron_keystone_password }}
+
+service_metadata_proxy = True
+metadata_proxy_shared_secret = {{ openstack_metadata_proxy_shared_secret }}
+
+[oslo_messaging_rabbit]
+rabbit_hosts = {% for host in groups[openstack_group_rabbitmq] -%}
+{{ hostvars[host].ansible_fqdn }}{% if not loop.last %},{% endif %}
+{%- endfor %}
+
+rabbit_userid = {{ nova_rabbitmq_user }}
+rabbit_password = {{ nova_rabbitmq_password }}
+rabbit_virtual_host = {{ nova_rabbitmq_vhost }}
+
+[oslo_concurrency]
+lock_path = $state_path/lock

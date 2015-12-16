@@ -1,0 +1,74 @@
+- hosts: haproxy
+  roles:
+    - role: haproxy-service
+      haproxy_service_name: heat-api
+      haproxy_service_port: 8004
+      haproxy_service_group: heat
+
+    - role: haproxy-service
+      haproxy_service_name: heat-api-cfn
+      haproxy_service_port: 8000
+      haproxy_service_group: heat
+
+- hosts: keystone
+  roles:
+    - name: keystone-service
+      keystone_service_name: heat
+      keystone_service_type: orchestration
+      keystone_endpoint_public: "{{ heat_keystone_endpoint_orchestration_public }}"
+      keystone_endpoint_internal: "{{ heat_keystone_endpoint_orchestration_internal }}"
+      keystone_endpoint_admin: "{{ heat_keystone_endpoint_orchestration_admin }}"
+
+    - name: keystone-service
+      keystone_service_name: heat-cfn
+      keystone_service_type: cloudformation
+      keystone_endpoint_public: "{{ heat_keystone_endpoint_cloudformation_public }}"
+      keystone_endpoint_internal: "{{ heat_keystone_endpoint_cloudformation_internal }}"
+      keystone_endpoint_admin: "{{ heat_keystone_endpoint_cloudformation_admin }}"
+
+    - name: keystone-user
+      keystone_user: "{{ heat_keystone_user }}"
+      keystone_password: "{{ heat_keystone_password }}"
+      keystone_project: "{{ heat_keystone_project }}"
+
+  tasks:
+    - name: ensure heat domain
+      run_once: yes
+      keystone_v3_domain:
+        name: "{{ heat_keystone_user_domain_name }}"
+        state: present
+
+    - name: ensure heat domain admin user
+      run_once: yes
+      keystone_v3_user:
+        name: "{{ heat_keystone_domain_admin_user }}"
+        password: "{{ heat_keystone_domain_admin_password }}"
+        domain: "{{ heat_keystone_user_domain_name }}"
+        state: present
+
+    - name: grant admin role to heat user on heat domain
+      run_once: yes
+      keystone_v3_assignment:
+        role: admin
+        user: "{{ heat_keystone_domain_admin_user }}"
+        user_domain: "{{ heat_keystone_user_domain_name }}"
+        domain: "{{ heat_keystone_user_domain_name }}"
+        state: present
+
+- hosts: mysql
+  roles:
+    - name: mysql-service
+      mysql_service_db: "{{ heat_mysql_db }}"
+      mysql_service_user: "{{ heat_mysql_user }}"
+      mysql_service_password: "{{ heat_mysql_password }}"
+
+- hosts: rabbitmq
+  roles:
+    - name: rabbitmq-service
+      rabbitmq_vhost: "{{ heat_rabbitmq_vhost }}"
+      rabbitmq_user: "{{ heat_rabbitmq_user }}"
+      rabbitmq_password: "{{ heat_rabbitmq_password }}"
+
+- hosts: heat
+  roles:
+    - heat

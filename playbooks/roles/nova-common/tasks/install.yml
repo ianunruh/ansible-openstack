@@ -1,0 +1,4 @@
+- name: install nova-common
+  apt:
+    pkg: nova-common
+    state: present

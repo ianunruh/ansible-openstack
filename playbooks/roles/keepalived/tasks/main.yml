@@ -1,0 +1,9 @@
+- include: install.yml
+  tags:
+    - keepalived
+    - keepalived-install
+
+- include: configure.yml
+  tags:
+    - keepalived
+    - keepalived-configure

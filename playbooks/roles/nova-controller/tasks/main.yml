@@ -1,0 +1,4 @@
+- include: install.yml
+  tags:
+    - nova
+    - nova-install

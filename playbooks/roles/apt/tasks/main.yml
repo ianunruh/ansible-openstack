@@ -1,0 +1,15 @@
+- name: configure proxy
+  template:
+    src: proxy.j2
+    dest: /etc/apt/apt.conf.d/00proxy
+  notify:
+    - update apt cache
+
+- meta: flush_handlers
+
+- name: update apt cache if stale
+  apt:
+    update_cache: yes
+    cache_valid_time: 7200
+  tags:
+    - always

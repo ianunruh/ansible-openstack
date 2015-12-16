@@ -1,0 +1,11 @@
+[ml2]
+mechanism_drivers = {{ neutron_ml2_mechanism_drivers|join(',') }}
+type_drivers = {{ neutron_ml2_type_drivers|join(',') }}
+tenant_network_types = {{ neutron_ml2_tenant_network_types|join(',') }}
+extension_drivers = {{ neutron_ml2_extension_drivers|join(',') }}
+
+[ml2_type_flat]
+flat_networks = {{ neutron_ml2_flat_networks|join(',') }}
+
+[ml2_type_vxlan]
+vni_ranges = {{ neutron_ml2_vxlan_ranges|join(',') }}

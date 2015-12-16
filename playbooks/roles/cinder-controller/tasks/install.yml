@@ -1,0 +1,9 @@
+- name: install cinder-api
+  apt:
+    pkg: cinder-api
+    state: present
+
+- name: install cinder-scheduler
+  apt:
+    pkg: cinder-scheduler
+    state: present

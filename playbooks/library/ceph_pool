@@ -1,0 +1,43 @@
+#!/usr/bin/env python
+from rados import Rados
+
+def main():
+    module = AnsibleModule(
+        argument_spec=dict(
+            name=dict(required=True),
+            auid=dict(),
+            crush_rule=dict(),
+            state=dict(choices=['present', 'absent'], default='present'),
+            config=dict(default='/etc/ceph/ceph.conf'),
+        ),
+        supports_check_mode=True,
+    )
+
+    name = module.params['name']
+    auid = module.params['auid']
+    crush_rule = module.params['crush_rule']
+    state = module.params['state']
+
+    config = module.params['config']
+
+    rados = Rados(conffile=config)
+    rados.connect()
+
+    changed = False
+
+    if state == 'present':
+        if not rados.pool_exists(name):
+            if not module.check_mode:
+                rados.create_pool(name, auid=auid, crush_rule=crush_rule)
+
+            changed = True
+    elif rados.pool_exists(name):
+        if not module.check_mode:
+            rados.delete_pool(name)
+
+        changed = True
+
+    module.exit_json(changed=changed)
+
+from ansible.module_utils.basic import *
+main()

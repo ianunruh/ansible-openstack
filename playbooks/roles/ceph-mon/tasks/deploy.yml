@@ -1,0 +1,79 @@
+- name: create admin keyring
+  run_once: yes
+  command: >
+    ceph-authtool /etc/ceph/ceph.client.admin.keyring
+      --create-keyring
+      --gen-key
+      --name client.admin
+      --set-uid=0
+      --cap mon 'allow *'
+      --cap osd 'allow *'
+      --cap mds 'allow'
+  args:
+    creates: /etc/ceph/ceph.client.admin.keyring
+
+- name: fetch admin keyring
+  run_once: yes
+  fetch:
+    src: /etc/ceph/ceph.client.admin.keyring
+    dest: fetch/ceph.client.admin.keyring
+    flat: yes
+
+- name: copy admin keyring
+  copy:
+    src: fetch/ceph.client.admin.keyring
+    dest: /etc/ceph/ceph.client.admin.keyring
+    owner: ceph
+    group: ceph
+    mode: 0640
+
+- name: create initial keyring
+  run_once: yes
+  command: >
+    ceph-authtool /var/lib/ceph/tmp/ceph.mon.keyring
+      --create-keyring
+      --gen-key
+      --name mon.
+      --cap mon "allow *"
+  args:
+    creates: /var/lib/ceph/tmp/ceph.mon.keyring
+
+- name: import admin keyring into monitor keyring
+  run_once: yes
+  command: >
+    ceph-authtool /var/lib/ceph/tmp/ceph.mon.keyring
+      --import-keyring /etc/ceph/ceph.client.admin.keyring
+
+- name: fetch initial keyring
+  run_once: yes
+  fetch:
+    src: /var/lib/ceph/tmp/ceph.mon.keyring
+    dest: fetch/ceph.mon.keyring
+    flat: yes
+
+- name: copy initial keyring
+  copy:
+    src: fetch/ceph.mon.keyring
+    dest: /var/lib/ceph/tmp/ceph.mon.keyring
+    owner: ceph
+    group: ceph
+    mode: 0640
+
+- name: deploy monitor
+  command: >
+    ceph-mon -i {{ ansible_hostname }}
+      --mkfs
+      --fsid {{ ceph_fsid }}
+      --setuser ceph
+      --keyring /var/lib/ceph/tmp/ceph.mon.keyring
+  args:
+    creates: /var/lib/ceph/mon/ceph-{{ ansible_hostname }}
+
+- name: activate monitor
+  file:
+    path: /var/lib/ceph/mon/ceph-{{ ansible_hostname }}/{{ item }}
+    state: touch
+  with_items:
+    - done
+    - upstart
+  changed_when: false

@@ -1,0 +1,46 @@
+- name: update root password
+  run_once: yes
+  mysql_user:
+    name: root
+    host: "{{ item }}"
+    password: "{{ mysql_root_password }}"
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+  when: not mysql_clustered or groups[openstack_group_mysql][0] == inventory_hostname
+
+- name: configure mysql client
+  template:
+    src: client.cnf.j2
+    dest: /root/.my.cnf
+    owner: root
+    group: root
+    mode: 0600
+
+- name: ensure sst user
+  run_once: yes
+  mysql_user:
+    name: "{{ mysql_sst_user }}"
+    password: "{{ mysql_sst_password }}"
+    host: "%"
+    priv: "*.*:ALL"
+    state: present
+  when: mysql_clustered
+
+- name: remove anonymous users
+  run_once: yes
+  mysql_user:
+    name: ""
+    host: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ ansible_hostname }}"
+    - localhost
+
+- name: remove test database
+  run_once: yes
+  mysql_db:
+    name: test
+    state: absent

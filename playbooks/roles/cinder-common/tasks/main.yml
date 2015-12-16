@@ -1,0 +1,9 @@
+- include: install.yml
+  tags:
+    - cinder
+    - cinder-install
+
+- include: configure.yml
+  tags:
+    - cinder
+    - cinder-configure

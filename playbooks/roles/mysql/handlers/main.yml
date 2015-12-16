@@ -1,0 +1,5 @@
+- name: restart mysql
+  service:
+    name: mysql
+    state: restarted
+  when: mysql_bootstrap is not defined or mysql_bootstrap|skipped

@@ -1,0 +1,55 @@
+#!/usr/bin/env python
+import keystoneclient
+from os_client_config import OpenStackConfig
+
+def main():
+    module = AnsibleModule(
+        argument_spec=dict(
+            name=dict(required=True),
+            enabled=dict(type='bool', default=True),
+            state=dict(choices=['present', 'absent'], default='present'),
+            client_config_name=dict(default='default'),
+        ),
+        supports_check_mode=True,
+    )
+
+    name = module.params['name']
+    enabled = module.params['enabled']
+    state = module.params['state']
+    client_config_name = module.params['client_config_name']
+
+    config = OpenStackConfig().get_one_cloud(client_config_name)
+
+    keystone = keystoneclient.v3.Client(**config.get_auth_args())
+
+    try:
+        region = keystone.regions.get(name)
+    except keystoneclient.exceptions.NotFound:
+        region = None
+
+    changed = False
+
+    if state == 'present':
+        if region:
+            if region.enabled != enabled:
+                if not module.check_mode:
+                    region = keystone.regions.update(region, enabled=enabled)
+
+                changed = True
+        else:
+            if not module.check_mode:
+                region = keystone.regions.create(id=name, enabled=enabled)
+
+            changed = True
+    elif region:
+        if not module.check_mode:
+            region.delete()
+
+        changed = True
+
+    module.exit_json(changed=changed)
+
+from ansible.module_utils.basic import *
+
+if __name__ == '__main__':
+    main()

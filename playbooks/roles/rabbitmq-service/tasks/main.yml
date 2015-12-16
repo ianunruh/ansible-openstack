@@ -1,0 +1,26 @@
+- name: create vhost
+  run_once: yes
+  rabbitmq_vhost:
+    name: "{{ rabbitmq_vhost }}"
+    state: present
+
+- name: ensure ha mode on all queues
+  run_once: yes
+  rabbitmq_policy:
+    name: ha
+    vhost: "{{ rabbitmq_vhost }}"
+    pattern: .*
+    tags:
+      ha-mode: all
+  when: rabbitmq_clustered|default(False)
+
+- name: create user
+  run_once: yes
+  rabbitmq_user:
+    user: "{{ rabbitmq_user }}"
+    password: "{{ rabbitmq_password }}"
+    vhost: "{{ rabbitmq_vhost }}"
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    state: present

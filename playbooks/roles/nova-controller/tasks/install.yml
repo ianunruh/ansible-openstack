@@ -1,0 +1,29 @@
+- name: install nova-api
+  apt:
+    pkg: nova-api
+    state: present
+
+- name: install nova-cert
+  apt:
+    pkg: nova-cert
+    state: present
+
+- name: install nova-conductor
+  apt:
+    pkg: nova-conductor
+    state: present
+
+- name: install nova-consoleauth
+  apt:
+    pkg: nova-consoleauth
+    state: present
+
+- name: install nova-novncproxy
+  apt:
+    pkg: nova-novncproxy
+    state: present
+
+- name: install nova-scheduler
+  apt:
+    pkg: nova-scheduler
+    state: present

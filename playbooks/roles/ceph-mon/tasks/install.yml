@@ -1,0 +1,4 @@
+- name: install ceph
+  apt:
+    pkg: ceph
+    state: present

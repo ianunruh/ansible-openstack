@@ -1,0 +1,6 @@
+- name: ensure nova user has ssh key pair
+  user:
+    name: nova
+    generate_ssh_key: yes
+    ssh_key_type: ecdsa
+    ssh_key_bits: 256

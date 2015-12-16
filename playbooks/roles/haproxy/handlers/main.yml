@@ -1,0 +1,10 @@
+- name: assemble haproxy config
+  assemble:
+    src: /etc/haproxy/cfg.d
+    dest: /etc/haproxy/haproxy.cfg
+    regexp: \.cfg$
+
+- name: reload haproxy
+  service:
+    name: haproxy
+    state: reloaded

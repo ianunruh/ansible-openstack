@@ -1,0 +1,18 @@
+[DEFAULT]
+bind_host = {{ glance_bind_address }}
+
+[database]
+connection = mysql+pymysql://{{ glance_mysql_user }}:{{ glance_mysql_password }}@{{ openstack_lb_vip }}/{{ glance_mysql_db }}
+
+[keystone_authtoken]
+auth_uri = {{ keystone_auth_uri }}
+auth_url = {{ keystone_auth_url }}
+auth_plugin = password
+project_domain_id = default
+user_domain_id = default
+project_name = {{ glance_keystone_project }}
+username = {{ glance_keystone_user }}
+password = {{ glance_keystone_password }}
+
+[paste_deploy]
+flavor = keystone

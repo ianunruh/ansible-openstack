@@ -1,0 +1,9 @@
+- include: install.yml
+  tags:
+    - neutron
+    - neutron-install
+
+- include: configure.yml
+  tags:
+    - neutron
+    - neutron-configure

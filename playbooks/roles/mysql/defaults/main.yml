@@ -1,0 +1,13 @@
+mysql_max_connections: 1024
+
+mysql_root_password: password
+
+mysql_clustered: false
+mysql_sst_user: sst
+mysql_sst_password: password
+
+mysql_ssl_cert_path: null
+mysql_ssl_key_path: null
+mysql_ssl_ca_cert_path: null
+
+mysql_bind_address: "{{ openstack_internal_address }}"

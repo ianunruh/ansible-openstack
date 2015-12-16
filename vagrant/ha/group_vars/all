@@ -1,0 +1,110 @@
+openstack_internal_address: "{{ ansible_eth1.ipv4.address }}"
+openstack_internal_interface: eth1
+
+openstack_lb_vip: 10.9.0.100
+
+ceph_mon_address: "{{ ansible_eth1.ipv4.address }}"
+
+mysql_clustered: true
+
+rabbitmq_clustered: true
+
+openstack_metadata_proxy_shared_secret: secret
+
+neutron_l3_distributed: true
+
+keystone_mysql_user: keystone
+keystone_mysql_db: keystone
+keystone_mysql_password: password
+
+keystone_endpoint_identity_public: "http://{{ openstack_lb_vip }}:5000/v3"
+keystone_endpoint_identity_internal: "http://{{ openstack_lb_vip }}:5000/v3"
+keystone_endpoint_identity_admin: "http://{{ openstack_lb_vip }}:35357/v3"
+
+keystone_admin_token: ADMIN
+
+glance_mysql_user: glance
+glance_mysql_db: glance
+glance_mysql_password: password
+
+glance_keystone_user: glance
+glance_keystone_password: password
+glance_keystone_project: service
+
+glance_keystone_endpoint_image_public: "http://{{ openstack_lb_vip }}:9292"
+glance_keystone_endpoint_image_internal: "http://{{ openstack_lb_vip }}:9292"
+glance_keystone_endpoint_image_admin: "http://{{ openstack_lb_vip }}:9292"
+
+nova_mysql_user: nova
+nova_mysql_db: nova
+nova_mysql_password: password
+
+nova_keystone_user: nova
+nova_keystone_password: password
+nova_keystone_project: service
+
+nova_rabbitmq_user: nova
+nova_rabbitmq_password: password
+nova_rabbitmq_vhost: openstack
+
+nova_keystone_endpoint_compute_public: "http://{{ openstack_lb_vip }}:8774/v2/%(tenant_id)s"
+nova_keystone_endpoint_compute_internal: "http://{{ openstack_lb_vip }}:8774/v2/%(tenant_id)s"
+nova_keystone_endpoint_compute_admin: "http://{{ openstack_lb_vip }}:8774/v2/%(tenant_id)s"
+
+neutron_mysql_user: neutron
+neutron_mysql_db: neutron
+neutron_mysql_password: password
+
+neutron_keystone_user: neutron
+neutron_keystone_password: password
+neutron_keystone_project: service
+
+neutron_rabbitmq_user: neutron
+neutron_rabbitmq_password: password
+neutron_rabbitmq_vhost: openstack
+
+neutron_keystone_endpoint_network_public: "http://{{ openstack_lb_vip }}:9696"
+neutron_keystone_endpoint_network_internal: "http://{{ openstack_lb_vip }}:9696"
+neutron_keystone_endpoint_network_admin: "http://{{ openstack_lb_vip }}:9696"
+
+cinder_mysql_user: cinder
+cinder_mysql_db: cinder
+cinder_mysql_password: password
+
+cinder_keystone_user: cinder
+cinder_keystone_password: password
+cinder_keystone_project: service
+
+cinder_rabbitmq_user: cinder
+cinder_rabbitmq_password: password
+cinder_rabbitmq_vhost: openstack
+
+cinder_keystone_endpoint_volume_public: "http://{{ openstack_lb_vip }}:8776/v1/%(tenant_id)s"
+cinder_keystone_endpoint_volume_internal: "http://{{ openstack_lb_vip }}:8776/v1/%(tenant_id)s"
+cinder_keystone_endpoint_volume_admin: "http://{{ openstack_lb_vip }}:8776/v1/%(tenant_id)s"
+cinder_keystone_endpoint_volumev2_public: "http://{{ openstack_lb_vip }}:8776/v2/%(tenant_id)s"
+cinder_keystone_endpoint_volumev2_internal: "http://{{ openstack_lb_vip }}:8776/v2/%(tenant_id)s"
+cinder_keystone_endpoint_volumev2_admin: "http://{{ openstack_lb_vip }}:8776/v2/%(tenant_id)s"
+
+heat_mysql_user: heat
+heat_mysql_db: heat
+heat_mysql_password: password
+
+heat_keystone_user: heat
+heat_keystone_password: password
+heat_keystone_project: service
+
+heat_keystone_domain_admin_user: heat_domain_admin
+heat_keystone_domain_admin_password: password
+heat_keystone_user_domain_name: heat
+
+heat_rabbitmq_user: heat
+heat_rabbitmq_password: password
+heat_rabbitmq_vhost: openstack
+
+heat_keystone_endpoint_orchestration_public: "http://{{ openstack_lb_vip }}:8004/v1/%(tenant_id)s"
+heat_keystone_endpoint_orchestration_internal: "http://{{ openstack_lb_vip }}:8004/v1/%(tenant_id)s"
+heat_keystone_endpoint_orchestration_admin: "http://{{ openstack_lb_vip }}:8004/v1/%(tenant_id)s"
+heat_keystone_endpoint_cloudformation_public: "http://{{ openstack_lb_vip }}:8000/v1"
+heat_keystone_endpoint_cloudformation_internal: "http://{{ openstack_lb_vip }}:8000/v1"
+heat_keystone_endpoint_cloudformation_admin: "http://{{ openstack_lb_vip }}:8000/v1"

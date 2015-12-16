@@ -1,0 +1,9 @@
+- name: install horizon
+  apt:
+    pkg: openstack-dashboard
+    state: present
+
+- name: remove ubuntu theme
+  apt:
+    pkg: openstack-dashboard-ubuntu-theme
+    state: absent

@@ -1,0 +1,4 @@
+- hosts: haproxy
+  roles:
+    - keepalived
+    - haproxy

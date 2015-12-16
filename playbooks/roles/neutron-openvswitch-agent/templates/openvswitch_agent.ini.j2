@@ -1,0 +1,19 @@
+[ovs]
+local_ip = {{ neutron_ovs_tunnel_address }}
+
+bridge_mappings = {{ neutron_ovs_bridge_mappings|join(',') }}
+
+[agent]
+tunnel_types = {{ neutron_ovs_tunnel_types|join(',') }}
+
+l2_population = True
+arp_responder = True
+
+{% if neutron_prevent_arp_spoofing %}
+prevent_arp_spoofing = True
+{% endif %}
+
+[securitygroup]
+firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
+enable_security_group = True
+enable_ipset = True

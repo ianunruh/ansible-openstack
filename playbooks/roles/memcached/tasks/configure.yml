@@ -1,0 +1,8 @@
+- name: configure memcached
+  copy:
+    src: memcached.conf
+    dest: /etc/memcached.conf
+  notify:
+    - restart memcached
+
+- meta: flush_handlers

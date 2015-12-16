@@ -1,0 +1,101 @@
+#!/usr/bin/env python
+import keystoneclient
+from os_client_config import OpenStackConfig
+
+def main():
+    module = AnsibleModule(
+        argument_spec=dict(
+            role=dict(required=True),
+
+            user=dict(),
+            user_domain=dict(default='default'),
+
+            group=dict(),
+            group_domain=dict(default='default'),
+
+            project=dict(),
+            project_domain=dict(default='default'),
+
+            domain=dict(),
+
+            state=dict(choices=['present', 'absent'], default='present'),
+
+            client_config_name=dict(default='default'),
+        ),
+        mutually_exclusive=[
+            ['user', 'group'],
+            ['project', 'domain'],
+        ],
+        supports_check_mode=True,
+    )
+
+    role_name = module.params['role']
+
+    user_name = module.params['user']
+    user_domain_name = module.params['user_domain']
+    group_name = module.params['group']
+    group_domain_name = module.params['group_domain']
+
+    project_name = module.params['project']
+    project_domain_name = module.params['project_domain']
+    domain_name = module.params['domain']
+
+    state = module.params['state']
+
+    client_config_name = module.params['client_config_name']
+
+    config = OpenStackConfig().get_one_cloud(client_config_name)
+
+    keystone = keystoneclient.v3.Client(**config.get_auth_args())
+
+    role = keystone.roles.find(name=role_name)
+
+    if user_name:
+        user_domain = keystone.domains.find(name=user_domain_name)
+        user = keystone.users.find(name=user_name, domain=user_domain)
+    else:
+        user = None
+
+    if group_name:
+        group_domain = keystone.domains.find(name=group_domain_name)
+        group = keystone.groups.find(name=group_name, domain=group_domain)
+    else:
+        group = None
+
+    if project_name:
+        project_domain = keystone.domains.find(name=project_domain_name)
+        project = keystone.projects.find(name=project_name, domain=project_domain)
+    else:
+        project = None
+
+    if domain_name:
+        domain = keystone.domains.find(name=domain_name)
+    else:
+        domain = None
+
+    try:
+        keystone.roles.check(role=role, user=user, group=group, project=project, domain=domain)
+        present = True
+    except keystoneclient.exceptions.NotFound:
+        present = False
+
+    changed = False
+
+    if state == 'present':
+        if not present:
+            if not module.check_mode:
+                keystone.roles.grant(role=role, user=user, group=group, project=project, domain=domain)
+
+            changed = True
+    elif role:
+        if not module.check_mode:
+            keystone.roles.revoke(role=role, user=user, group=group, project=project, domain=domain)
+
+        changed = True
+
+    module.exit_json(changed=changed)
+
+from ansible.module_utils.basic import *
+
+if __name__ == '__main__':
+    main()

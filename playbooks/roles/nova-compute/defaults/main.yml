@@ -1,0 +1,9 @@
+nova_compute_libvirt_virt_type: qemu
+
+nova_reserved_host_disk_mb: 0
+nova_reserved_host_memory_mb: 512
+
+nova_libvirt_ceph_secret_uuid: 0b2f7407-7513-42a1-a7e7-87012c723a16
+
+# VNC configuration
+nova_novncproxy_base_url: "http://{{ openstack_lb_vip }}:6080/vnc_auto.html"

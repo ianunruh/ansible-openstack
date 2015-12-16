@@ -1,0 +1,10 @@
+- name: enable ip forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    sysctl_set: yes
+
+- name: install neutron-l3-agent
+  apt:
+    pkg: neutron-l3-agent
+    state: present

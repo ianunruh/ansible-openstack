@@ -1,0 +1,14 @@
+- name: install keystone
+  apt:
+    pkg: keystone
+    state: present
+
+- name: install mod_wsgi
+  apt:
+    pkg: libapache2-mod-wsgi
+    state: present
+
+- name: enable mod_wsgi
+  apache2_module:
+    name: wsgi
+    state: present

@@ -1,0 +1,3 @@
+ceph_osd_directories:
+  - /srv/ceph-osd-0
+  - /srv/ceph-osd-1

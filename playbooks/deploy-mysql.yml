@@ -1,0 +1,27 @@
+- hosts: haproxy
+  roles:
+    - role: haproxy-service
+      haproxy_service_name: mysql
+      haproxy_service_port: 3306
+      haproxy_service_group: mysql
+      haproxy_service_balance: first
+      haproxy_service_options:
+        - mysql-check user haproxy
+
+- hosts: mysql[0]
+  roles:
+    - mysql
+
+- hosts: mysql[1:]
+  roles:
+    - mysql
+
+- hosts: mysql
+  tasks:
+    - name: ensure haproxy check user
+      run_once: yes
+      mysql_user:
+        name: haproxy
+        password: ""
+        host: "%"
+        state: present

@@ -1,0 +1,26 @@
+- hosts: haproxy
+  roles:
+    - role: haproxy-service
+      haproxy_service_name: keystone-public
+      haproxy_service_port: 5000
+      haproxy_service_group: keystone
+      haproxy_service_options:
+        - httpchk
+
+    - role: haproxy-service
+      haproxy_service_name: keystone-admin
+      haproxy_service_port: 35357
+      haproxy_service_group: keystone
+      haproxy_service_options:
+        - httpchk
+
+- hosts: mysql
+  roles:
+    - name: mysql-service
+      mysql_service_db: "{{ keystone_mysql_db }}"
+      mysql_service_user: "{{ keystone_mysql_user }}"
+      mysql_service_password: "{{ keystone_mysql_password }}"
+
+- hosts: keystone
+  roles:
+    - keystone

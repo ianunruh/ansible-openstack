@@ -1,0 +1,20 @@
+- name: configure mysql
+  template:
+    src: my.cnf.j2
+    dest: /etc/mysql/my.cnf
+  notify:
+    - restart mysql
+
+- include: bootstrap.yml
+  when:
+    - mysql_clustered
+    - groups[openstack_group_mysql][0] == inventory_hostname
+
+- meta: flush_handlers
+
+- name: wait for mysql
+  wait_for:
+    host: "{{ openstack_internal_address }}"
+    port: 3306
+
+- include: security.yml

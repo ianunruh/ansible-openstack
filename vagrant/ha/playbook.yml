@@ -1,0 +1,23 @@
+- hosts: all
+  tasks:
+    - name: create swap file
+      command: dd if=/dev/zero of=/swapfile bs=1024 count=5120k
+      args:
+        creates: /swapfile
+      register: result
+    - name: initialize swap file
+      command: mkswap /swapfile
+      when: result|changed
+    - name: add swapfile to fstab
+      mount:
+        name: none
+        src: /swapfile
+        fstype: swap
+        opts: sw
+        state: present
+      register: result
+    - name: activate swap
+      command: swapon -a
+      when: result|changed
+
+- include: playbooks/ha-deployment.yml

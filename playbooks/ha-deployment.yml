@@ -1,0 +1,17 @@
+- hosts: all
+  roles:
+    - apt
+    - chrony
+
+- include: deploy-lb.yml
+- include: deploy-mysql.yml
+- include: deploy-rabbitmq.yml
+- include: deploy-memcached.yml
+- include: deploy-keystone.yml
+- include: deploy-ceph.yml
+- include: deploy-glance.yml
+- include: deploy-cinder.yml
+- include: deploy-neutron.yml
+- include: deploy-nova.yml
+- include: deploy-heat.yml
+- include: deploy-horizon.yml

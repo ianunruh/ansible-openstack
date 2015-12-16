@@ -1,0 +1,9 @@
+- name: install neutron-common
+  apt:
+    pkg: neutron-common
+    state: present
+
+- name: install neutron-plugin-ml2
+  apt:
+    pkg: neutron-plugin-ml2
+    state: present

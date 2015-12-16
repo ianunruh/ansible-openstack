@@ -1,0 +1,18 @@
+[global]
+  fsid = {{ ceph_fsid }}
+
+  {% if ceph_public_network -%}
+  public network = {{ ceph_public_network }}
+  {%- endif %}
+
+  {% if ceph_cluster_network -%}
+  cluster network = {{ ceph_cluster_network }}
+  {%- endif %}
+
+  osd pool default size = {{ ceph_osd_pool_default_size }}
+
+  osd journal size = {{ ceph_osd_journal_size }}
+
+  mon host = {% for host in groups[ceph_group_mon] -%}
+    {{ hostvars[host].ceph_mon_address }}{% if not loop.last %}, {% endif %}
+  {%- endfor %}

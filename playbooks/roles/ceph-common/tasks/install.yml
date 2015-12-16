@@ -1,0 +1,19 @@
+- name: add apt key
+  apt_key:
+    id: 460F3994
+    url: https://download.ceph.com/keys/release.asc
+
+- name: add apt repository
+  apt_repository:
+    repo: deb http://download.ceph.com/debian-infernalis trusty main
+    update_cache: yes
+
+- name: install ceph-common
+  apt:
+    pkg: ceph-common
+    state: present
+
+- name: ensure config directory
+  file:
+    path: /etc/ceph/conf.d
+    state: directory

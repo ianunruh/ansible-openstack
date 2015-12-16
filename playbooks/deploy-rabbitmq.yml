@@ -1,0 +1,7 @@
+- hosts: rabbitmq[0]
+  roles:
+    - rabbitmq
+
+- hosts: rabbitmq[1:]
+  roles:
+    - rabbitmq
