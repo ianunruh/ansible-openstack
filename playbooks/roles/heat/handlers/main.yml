@@ -1,6 +1,7 @@
 - name: sync heat db
   run_once: yes
   command: heat-manage db_sync
+  when: openstack_auto_migrate
 
 - name: restart heat-api
   service:

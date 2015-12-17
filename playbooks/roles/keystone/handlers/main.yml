@@ -1,3 +1,4 @@
 - name: sync keystone db
   run_once: yes
   command: keystone-manage db_sync
+  when: openstack_auto_migrate

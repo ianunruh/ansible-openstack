@@ -2,4 +2,6 @@
   service:
     name: mysql
     state: restarted
-  when: mysql_bootstrap is not defined or mysql_bootstrap|skipped
+  when:
+    - mysql_bootstrap is not defined or mysql_bootstrap|skipped
+    - openstack_auto_restart

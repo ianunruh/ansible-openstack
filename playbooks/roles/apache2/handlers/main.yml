@@ -2,3 +2,4 @@
   service:
     name: apache2
     state: restarted
+  when: openstack_auto_restart

@@ -5,33 +5,41 @@
       --config-file /etc/neutron/neutron.conf
       --config-file /etc/neutron/plugins/ml2/ml2_conf.ini
       upgrade head
+  when:
+    - inventory_hostname in groups[openstack_group_neutron_controller]
+    - openstack_auto_migrate
 
 - name: restart neutron-dhcp-agent
   service:
     name: neutron-dhcp-agent
     state: restarted
   failed_when: false
+  when: openstack_auto_restart
 
 - name: restart neutron-l3-agent
   service:
     name: neutron-l3-agent
     state: restarted
   failed_when: false
+  when: openstack_auto_restart
 
 - name: restart neutron-metadata-agent
   service:
     name: neutron-metadata-agent
     state: restarted
   failed_when: false
+  when: openstack_auto_restart
 
 - name: restart neutron-plugin-openvswitch-agent
   service:
     name: neutron-plugin-openvswitch-agent
     state: restarted
   failed_when: false
+  when: openstack_auto_restart
 
 - name: restart neutron-server
   service:
     name: neutron-server
     state: restarted
   failed_when: false
+  when: openstack_auto_restart

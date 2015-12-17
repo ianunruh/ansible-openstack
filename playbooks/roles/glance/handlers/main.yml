@@ -1,13 +1,16 @@
 - name: sync glance db
   run_once: yes
   command: glance-manage db_sync
+  when: openstack_auto_migrate
 
 - name: restart glance-api
   service:
     name: glance-api
     state: restarted
+  when: openstack_auto_restart
 
 - name: restart glance-registry
   service:
     name: glance-registry
     state: restarted
+  when: openstack_auto_restart

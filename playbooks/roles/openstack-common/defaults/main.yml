@@ -5,6 +5,7 @@ openstack_group_memcached: memcached
 openstack_group_keystone: keystone
 openstack_group_nova_controller: nova-controller
 openstack_group_nova_compute: nova-compute
+openstack_group_neutron_server: neutron-controller
 
 openstack_region: RegionOne
 
@@ -15,3 +16,6 @@ openstack_internal_interface: eth0
 
 keystone_auth_uri: http://{{ openstack_lb_vip }}:5000
 keystone_auth_url: http://{{ openstack_lb_vip }}:35357
+
+openstack_auto_migrate: true
+openstack_auto_restart: true
