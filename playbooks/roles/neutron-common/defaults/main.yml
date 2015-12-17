@@ -28,5 +28,6 @@ neutron_ml2_extension_drivers:
   - port_security
 
 neutron_ml2_flat_networks: []
+neutron_ml2_vlan_networks: []
 neutron_ml2_vxlan_ranges:
   - 10000:20000

@@ -13,6 +13,10 @@ arp_responder = True
 prevent_arp_spoofing = True
 {% endif %}
 
+{% if neutron_l3_distributed %}
+enable_distributed_routing = True
+{% endif %}
+
 [securitygroup]
 firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
 enable_security_group = True

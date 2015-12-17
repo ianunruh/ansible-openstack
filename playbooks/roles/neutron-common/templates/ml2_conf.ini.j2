@@ -7,5 +7,8 @@ extension_drivers = {{ neutron_ml2_extension_drivers|join(',') }}
 [ml2_type_flat]
 flat_networks = {{ neutron_ml2_flat_networks|join(',') }}
 
+[ml2_type_vlan]
+network_vlan_ranges = {{ neutron_ml2_vlan_networks|join(',') }}
+
 [ml2_type_vxlan]
 vni_ranges = {{ neutron_ml2_vxlan_ranges|join(',') }}
