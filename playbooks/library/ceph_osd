@@ -1,6 +1,18 @@
 #!/usr/bin/env python
 import os
+import re
+import stat
 import subprocess
+
+DISK_PATTERN = re.compile('(\S+)p\d+ ceph data')
+
+def has_ceph_partition(device):
+    out = subprocess.check_output(['ceph-disk', 'list'])
+    for match in DISK_PATTERN.findall(out):
+        if match == device:
+            return True
+
+    return False
 
 def main():
     module = AnsibleModule(
@@ -14,18 +26,28 @@ def main():
     if not os.path.exists(data_path):
         module.fail_json(msg='Data path does not exist')
 
-    if not os.path.isdir(data_path):
-        module.fail_json(msg='Data path is not directory')
+    if journal_path and not os.path.exists(journal_path):
+        module.fail_json(msg='Journal path does not exist')
+
+    mode = os.stat(data_path).st_mode
+
+    if not (stat.S_ISDIR(mode) or stat.S_ISBLK(mode)):
+        module.fail_json(msg='Data path must be directory or block device')
 
     changed = False
 
-    if not os.path.exists(os.path.join(data_path, 'magic')):
-        subprocess.check_call(['ceph-disk', 'prepare', data_path])
-        changed = True
+    if stat.S_ISBLK(mode):
+        if not has_ceph_partition(data_path):
+            subprocess.check_call(['ceph-disk', 'prepare', data_path])
+            changed = True
+    else:
+        if not os.path.exists(os.path.join(data_path, 'magic')):
+            subprocess.check_call(['ceph-disk', 'prepare', data_path])
+            changed = True
 
-    if not os.path.exists(os.path.join(data_path, 'active')):
-        subprocess.check_call(['ceph-disk', 'activate', data_path])
-        changed = True
+        if not os.path.exists(os.path.join(data_path, 'active')):
+            subprocess.check_call(['ceph-disk', 'activate', data_path])
+            changed = True
 
     module.exit_json(changed=changed)
 

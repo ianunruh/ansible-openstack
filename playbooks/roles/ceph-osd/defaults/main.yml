@@ -1,1 +1,2 @@
 ceph_osd_directories: []
+ceph_osd_devices: []
