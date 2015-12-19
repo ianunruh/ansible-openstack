@@ -1,0 +1,3 @@
+{% if neutron_dhcp_mtu %}
+dhcp-option-force=26,{{ neutron_dhcp_mtu }}
+{% endif %}
