@@ -1,0 +1,1 @@
+ceph_mon_address: "{{ ansible_default_ipv4.hostname }}"
