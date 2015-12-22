@@ -5,4 +5,11 @@
   notify:
     - restart neutron-dhcp-agent
 
+- name: configure dnsmasq
+  template:
+    src: dnsmasq.conf.j2
+    dest: /etc/neutron/dnsmasq.conf
+  notify:
+    - restart neutron-dhcp-agent
+
 - meta: flush_handlers
