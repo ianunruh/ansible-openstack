@@ -1,6 +1,6 @@
-- name: wait for osd bootstrap keyring to be ready
-  wait_for:
-    path: /var/lib/ceph/bootstrap-osd/ceph.keyring
+- name: generate bootstrap keys
+  command: ceph-create-keys -i {{ ansible_hostname }}
+  changed_when: false
 
 - name: fetch osd bootstrap keyring
   run_once: yes

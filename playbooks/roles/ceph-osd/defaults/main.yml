@@ -1,2 +1,3 @@
 ceph_osd_directories: []
 ceph_osd_devices: []
+ceph_osd_zap_devices: false

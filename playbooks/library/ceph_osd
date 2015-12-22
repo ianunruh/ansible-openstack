@@ -4,50 +4,96 @@ import re
 import stat
 import subprocess
 
-DISK_PATTERN = re.compile('(\S+)p\d+ ceph data')
+PARTITION_PATTERN = re.compile(r'/dev/(sd\w{1,2}|loop\dp)\d{1,2}$')
+PARTITION_FORMAT = '{}1'
 
-def has_ceph_partition(device):
-    out = subprocess.check_output(['ceph-disk', 'list'])
-    for match in DISK_PATTERN.findall(out):
-        if match == device:
-            return True
+class Device(object):
+    def __init__(self, path):
+        self.path = path
+        self.is_partition = PARTITION_PATTERN.match(self.path)
 
-    return False
+        if self.is_partition:
+            self.activation_path = self.path
+        else:
+            self.activation_path = PARTITION_FORMAT.format(re.sub(r'^(/dev/loop[0-9])$', r'\1p', self.path))
+
+        self._check_parted()
+
+    def zap_partition_table(self):
+        subprocess.check_call(['sgdisk', '--zap-all', self.path])
+
+    def _check_parted(self):
+        process = subprocess.Popen(['parted', '--script', self.path, 'print'],
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+
+        out, err = process.communicate()
+
+        self.has_ceph_partition = 'ceph' in out
+
+def prepare_osd(data_path, journal_path=None):
+    cmd = ['ceph-disk', 'prepare', data_path]
+    if journal_path:
+        cmd.append(journal_path)
+
+    subprocess.check_call(cmd)
+
+def activate_osd(data_path):
+    subprocess.check_call(['ceph-disk', 'activate', data_path])
 
 def main():
     module = AnsibleModule(
         argument_spec=dict(
             data_path=dict(required=True),
+            journal_path=dict(),
         ),
     )
 
     data_path = module.params['data_path']
+    journal_path = module.params['journal_path']
+
+    if journal_path:
+        if not os.path.exists(journal_path):
+            module.fail_json(msg='Journal path does not exist')
+
+        journal_mode = os.stat(journal_path).st_mode
+
+        if not (stat.S_ISDIR(journal_mode) or stat.S_ISBLK(journal_mode)):
+            module.fail_json(msg='Journal path must be directory or block device')
+
+        if stat.S_ISBLK(journal_mode):
+            journal_dev = Device(journal_path)
+            if not journal_dev.is_partition and not journal_dev.has_ceph_partition:
+                journal_dev.zap_partition_table()
 
     if not os.path.exists(data_path):
         module.fail_json(msg='Data path does not exist')
 
-    if journal_path and not os.path.exists(journal_path):
-        module.fail_json(msg='Journal path does not exist')
+    data_mode = os.stat(data_path).st_mode
 
-    mode = os.stat(data_path).st_mode
-
-    if not (stat.S_ISDIR(mode) or stat.S_ISBLK(mode)):
+    if not (stat.S_ISDIR(data_mode) or stat.S_ISBLK(data_mode)):
         module.fail_json(msg='Data path must be directory or block device')
 
-    changed = False
+    if stat.S_ISBLK(data_mode):
+        data_dev = Device(data_path)
+        if not data_dev.has_ceph_partition:
+            if not data_dev.is_partition:
+                data_dev.zap_partition_table()
 
-    if stat.S_ISBLK(mode):
-        if not has_ceph_partition(data_path):
-            subprocess.check_call(['ceph-disk', 'prepare', data_path])
+            prepare_osd(data_path, journal_path)
             changed = True
+
+        activate_osd(data_dev.activation_path)
     else:
         if not os.path.exists(os.path.join(data_path, 'magic')):
-            subprocess.check_call(['ceph-disk', 'prepare', data_path])
+            prepare_osd(data_path, journal_path)
             changed = True
 
         if not os.path.exists(os.path.join(data_path, 'active')):
-            subprocess.check_call(['ceph-disk', 'activate', data_path])
+            activate_osd(data_path)
             changed = True
+
+    changed = False
 
     module.exit_json(changed=changed)
 

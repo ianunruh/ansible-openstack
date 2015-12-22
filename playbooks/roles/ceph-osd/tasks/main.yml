@@ -19,12 +19,18 @@
     state: directory
   with_items: ceph_osd_directories
 
-- name: prepare and activate osd directory
+- name: prepare and activate osd directories
   ceph_osd:
     data_path: "{{ item }}"
   with_items: ceph_osd_directories
 
-- name: prepare and activate osd device
+- name: zap osd devices
+  command: ceph-disk zap {{ item.data_path }}
+  with_items: ceph_osd_devices
+  when: ceph_osd_zap_devices
+
+- name: prepare and activate osd devices
   ceph_osd:
-    data_path: "{{ item }}"
+    data_path: "{{ item.data_path }}"
+    journal_path: "{{ item.journal_path|default(None) }}"
   with_items: ceph_osd_devices

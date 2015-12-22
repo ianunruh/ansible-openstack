@@ -9,10 +9,16 @@
   cluster network = {{ ceph_cluster_network }}
   {%- endif %}
 
-  osd pool default size = {{ ceph_osd_pool_default_size }}
-
   osd journal size = {{ ceph_osd_journal_size }}
 
-  mon host = {% for host in groups[ceph_group_mon] -%}
-    {{ hostvars[host].ceph_mon_address }}{% if not loop.last %}, {% endif %}
-  {%- endfor %}
+  filestore xattr use omap = true
+  osd pool default size = {{ ceph_osd_pool_default_size }}
+  osd pool default pg num = 333
+  osd pool default pgp num = 333
+  osd crush chooseleaf type = 1
+
+{% for host in groups[ceph_group_mon] %}
+[mon.{{ hostvars[host].ansible_hostname }}]
+  host = {{ hostvars[host].ansible_hostname }}
+  mon addr = {{ hostvars[host].ceph_mon_address }}:6789
+{% endfor %}

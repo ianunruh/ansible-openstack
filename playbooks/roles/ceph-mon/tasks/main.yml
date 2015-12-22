@@ -3,27 +3,10 @@
     - ceph
     - ceph-install
 
-- name: check if monitor deployed
-  stat:
-    path: /var/lib/ceph/mon/ceph-{{ ansible_hostname }}/done
-  register: stat_result
-  tags:
-    - ceph
-    - ceph-deploy
-
 - include: deploy.yml
-  when: not stat_result.stat.exists
   tags:
     - ceph
     - ceph-deploy
-
-- name: ensure monitor started
-  service:
-    name: ceph-mon
-    args: id={{ ansible_hostname }}
-    state: started
-  tags:
-    - ceph
 
 - include: fetch-keys.yml
   tags:

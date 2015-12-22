@@ -11,3 +11,4 @@
   service:
     name: ceph-all
     state: restarted
+  changed_when: false
