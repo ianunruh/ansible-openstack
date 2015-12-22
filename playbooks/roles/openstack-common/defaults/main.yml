@@ -5,7 +5,7 @@ openstack_group_memcached: memcached
 openstack_group_keystone: keystone
 openstack_group_nova_controller: nova-controller
 openstack_group_nova_compute: nova-compute
-openstack_group_neutron_server: neutron-controller
+openstack_group_neutron_controller: neutron-controller
 
 openstack_region: RegionOne
 
