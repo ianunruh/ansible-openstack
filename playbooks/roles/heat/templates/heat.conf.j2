@@ -10,6 +10,12 @@ stack_user_domain_name = {{ heat_keystone_user_domain_name }}
 
 host = {{ ansible_fqdn }}
 
+[heat_api]
+bind_host = {{ heat_bind_address }}
+
+[heat_api_cfn]
+bind_host = {{ heat_bind_address }}
+
 [database]
 connection = mysql+pymysql://{{ heat_mysql_user }}:{{ heat_mysql_password }}@{{ openstack_lb_vip }}/{{ heat_mysql_db }}
 

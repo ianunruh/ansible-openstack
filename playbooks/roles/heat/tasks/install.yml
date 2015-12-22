@@ -3,7 +3,7 @@
     pkg: heat-api
     state: present
 
-- name: install heat-api-cfn-cfn
+- name: install heat-api-cfn
   apt:
     pkg: heat-api-cfn
     state: present
