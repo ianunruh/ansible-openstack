@@ -6,6 +6,8 @@ allow_overlapping_ips = True
 rpc_backend = rabbit
 auth_strategy = keystone
 
+host = {{ ansible_fqdn }}
+
 notify_nova_on_port_status_changes = True
 notify_nova_on_port_data_changes = True
 nova_url = http://{{ openstack_lb_vip }}:8774/v2

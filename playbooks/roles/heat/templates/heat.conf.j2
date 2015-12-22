@@ -8,6 +8,8 @@ stack_domain_admin = {{ heat_keystone_domain_admin_user }}
 stack_domain_admin_password = {{ heat_keystone_domain_admin_password }}
 stack_user_domain_name = {{ heat_keystone_user_domain_name }}
 
+host = {{ ansible_fqdn }}
+
 [database]
 connection = mysql+pymysql://{{ heat_mysql_user }}:{{ heat_mysql_password }}@{{ openstack_lb_vip }}/{{ heat_mysql_db }}
 

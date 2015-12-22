@@ -3,6 +3,8 @@ auth_strategy = keystone
 
 rpc_backend = rabbit
 
+host = {{ ansible_fqdn }}
+
 my_ip = {{ openstack_internal_address }}
 
 osapi_volume_listen = {{ cinder_bind_address }}
