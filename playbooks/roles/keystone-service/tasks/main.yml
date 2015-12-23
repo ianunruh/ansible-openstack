@@ -5,6 +5,8 @@
     type: "{{ keystone_service_type }}"
     state: present
     client_config_name: default-admin-token
+  tags:
+    - keystone-service
 
 - name: create endpoint
   run_once: yes
@@ -19,3 +21,5 @@
     public: "{{ keystone_endpoint_public }}"
     internal: "{{ keystone_endpoint_internal }}"
     admin: "{{ keystone_endpoint_admin }}"
+  tags:
+    - keystone-service
