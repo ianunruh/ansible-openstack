@@ -1,3 +1,11 @@
 cinder_bind_address: "{{ openstack_internal_address }}"
 
-cinder_libvirt_ceph_secret_uuid: 0b2f7407-7513-42a1-a7e7-87012c723a16
+cinder_backends:
+  rbd:
+    volume_driver: cinder.volume.drivers.rbd.RBDDriver
+    volume_backend_name: rbd
+    host: rbd # https://bugs.launchpad.net/cinder/+bug/1280367
+    rbd_pool: volumes
+    rbd_user: cinder
+    rbd_ceph_conf: /etc/ceph/ceph.conf
+    rbd_secret_uuid: 0b2f7407-7513-42a1-a7e7-87012c723a16

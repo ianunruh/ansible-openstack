@@ -12,11 +12,9 @@ osapi_volume_listen = {{ cinder_bind_address }}
 glance_host = {{ openstack_lb_vip }}
 glance_api_version = 2
 
-volume_driver = cinder.volume.drivers.rbd.RBDDriver
-rbd_pool = volumes
-rbd_user = cinder
-rbd_ceph_conf = /etc/ceph/ceph.conf
-rbd_secret_uuid = {{ cinder_libvirt_ceph_secret_uuid }}
+{% if cinder_backends %}
+enabled_backends = {{ cinder_backends.keys()|join(',') }}
+{% endif %}
 
 [keymgr]
 {#
@@ -54,3 +52,12 @@ rabbit_virtual_host = {{ cinder_rabbitmq_vhost }}
 
 [oslo_concurrency]
 lock_path = /var/lib/cinder/tmp
+
+{% if cinder_backends %}
+{% for backend_name, options in cinder_backends.iteritems() %}
+[{{ backend_name }}]
+{% for key, value in options.iteritems() %}
+{{ key }} = {{ value }}
+{% endfor %}
+{% endfor %}
+{% endif %}
