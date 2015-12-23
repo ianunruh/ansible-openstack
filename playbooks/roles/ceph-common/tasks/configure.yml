@@ -4,6 +4,5 @@
     dest: /etc/ceph/conf.d/00-global.conf
   notify:
     - assemble ceph config
-    - restart ceph-all
 
 - meta: flush_handlers

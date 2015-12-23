@@ -6,9 +6,3 @@
     owner: ceph
     group: ceph
     mode: 0644
-
-- name: restart ceph-all
-  service:
-    name: ceph-all
-    state: restarted
-  changed_when: false
