@@ -8,6 +8,9 @@ host = {{ ansible_fqdn }}
 my_ip = {{ openstack_internal_address }}
 
 osapi_volume_listen = {{ cinder_bind_address }}
+{% if cinder_api_public_endpoint %}
+public_endpoint = {{ cinder_api_public_endpoint }}
+{% endif %}
 
 glance_host = {{ openstack_lb_vip }}
 glance_api_version = 2

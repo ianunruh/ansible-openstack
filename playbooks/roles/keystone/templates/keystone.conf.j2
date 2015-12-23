@@ -1,6 +1,13 @@
 [DEFAULT]
 log_dir = /var/log/keystone
 
+{% if keystone_public_endpoint %}
+public_endpoint = {{ keystone_public_endpoint }}
+{% endif %}
+{% if keystone_admin_endpoint %}
+admin_endpoint = {{ keystone_admin_endpoint }}
+{% endif %}
+
 admin_token = {{ keystone_admin_token }}
 
 [database]

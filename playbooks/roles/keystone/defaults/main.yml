@@ -4,3 +4,5 @@ keystone_ssl_cert_path: null
 keystone_ssl_key_path: null
 
 keystone_bind_address: "{{ openstack_internal_address }}"
+keystone_public_endpoint: null
+keystone_admin_endpoint: null

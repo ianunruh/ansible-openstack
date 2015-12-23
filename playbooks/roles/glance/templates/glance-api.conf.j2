@@ -1,5 +1,8 @@
 [DEFAULT]
 bind_host = {{ glance_bind_address }}
+{% if glance_api_public_endpoint %}
+public_endpoint = {{ glance_api_public_endpoint }}
+{% endif %}
 
 registry_host = {{ openstack_lb_vip }}
 registry_port = 9191
