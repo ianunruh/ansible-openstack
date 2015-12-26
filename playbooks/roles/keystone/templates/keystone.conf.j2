@@ -19,8 +19,8 @@ servers = {% for host in groups[openstack_group_memcached] -%}
 {%- endfor %}
 
 [token]
-provider = uuid
-driver = memcache
+provider = {{ keystone_token_provider }}
+driver = {{ keystone_token_driver }}
 
 [revoke]
 driver = sql
