@@ -117,11 +117,7 @@ CACHES = {
     }
 }
 
-#CACHES = {
-#    'default': {
-#        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-#    }
-#}
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
 # Send email to the console by default
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
