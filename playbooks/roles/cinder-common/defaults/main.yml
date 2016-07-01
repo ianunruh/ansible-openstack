@@ -1,5 +1,6 @@
 cinder_bind_address: "{{ openstack_internal_address }}"
 cinder_api_public_endpoint: null
+cinder_api_workers: "{{ openstack_workers }}"
 
 cinder_backends:
   rbd:

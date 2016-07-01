@@ -17,7 +17,9 @@ firewall_driver = nova.virt.firewall.NoopFirewallDriver
 
 enabled_apis = osapi_compute, metadata
 metadata_listen = {{ nova_bind_address }}
+metadata_workers = {{ nova_api_workers }}
 osapi_compute_listen = {{ nova_bind_address }}
+osapi_compute_workers = {{ nova_api_workers }}
 
 scheduler_default_filters = {{ nova_scheduler_default_filters|join(',') }}
 cpu_allocation_ratio = {{ nova_cpu_allocation_ratio }}
@@ -30,6 +32,9 @@ novncproxy_host = {{ nova_bind_address }}
 memcached_servers = {% for host in groups[openstack_group_memcached] -%}
 {{ hostvars[host].ansible_fqdn }}{% if not loop.last %},{% endif %}
 {%- endfor %}
+
+[conductor]
+workers = {{ nova_conductor_workers }}
 
 {% if inventory_hostname in groups[openstack_group_nova_controller] %}
 [database]

@@ -9,6 +9,8 @@ registry_port = 9191
 
 show_image_direct_url = True
 
+workers = {{ glance_api_workers }}
+
 [glance_store]
 default_store = {{ glance_default_store }}
 stores = {{ glance_stores|join(',') }}

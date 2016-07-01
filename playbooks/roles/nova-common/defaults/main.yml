@@ -1,5 +1,8 @@
 nova_bind_address: "{{ openstack_internal_address }}"
 
+nova_api_workers: "{{ openstack_workers }}"
+nova_conductor_workers: "{{ openstack_workers }}"
+
 # Scheduler configuration
 nova_scheduler_default_filters:
   - AggregateInstanceExtraSpecsFilter

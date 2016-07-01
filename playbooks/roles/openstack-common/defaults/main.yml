@@ -19,3 +19,5 @@ keystone_auth_url: http://{{ openstack_lb_vip }}:35357
 
 openstack_auto_migrate: true
 openstack_auto_restart: true
+
+openstack_workers: "{{ ansible_processor_vcpus }}"

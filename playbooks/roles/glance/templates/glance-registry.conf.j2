@@ -1,6 +1,8 @@
 [DEFAULT]
 bind_host = {{ glance_bind_address }}
 
+workers = {{ glance_registry_workers }}
+
 [database]
 connection = mysql+pymysql://{{ glance_mysql_user }}:{{ glance_mysql_password }}@{{ openstack_lb_vip }}/{{ glance_mysql_db }}
 

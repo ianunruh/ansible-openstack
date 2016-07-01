@@ -1,4 +1,6 @@
 [DEFAULT]
+metadata_workers = {{ neutron_metadata_workers }}
+
 nova_metadata_ip = {{ openstack_lb_vip }}
 metadata_proxy_shared_secret = {{ openstack_metadata_proxy_shared_secret }}
 

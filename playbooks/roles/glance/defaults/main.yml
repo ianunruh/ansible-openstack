@@ -5,3 +5,6 @@ glance_default_store: rbd
 glance_stores:
   - rbd
   - http
+
+glance_api_workers: "{{ openstack_workers }}"
+glance_registry_workers: "{{ openstack_workers }}"

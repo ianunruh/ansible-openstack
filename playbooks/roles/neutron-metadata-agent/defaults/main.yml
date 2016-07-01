@@ -1,0 +1,1 @@
+neutron_metadata_workers: "{{ openstack_workers }}"

@@ -1,1 +1,3 @@
 heat_bind_address: "{{ openstack_internal_address }}"
+heat_api_workers: "{{ openstack_workers }}"
+heat_engine_workers: "{{ openstack_workers }}"
