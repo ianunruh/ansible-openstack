@@ -12,21 +12,21 @@
 
 - hosts: keystone
   roles:
-    - name: keystone-service
+    - role: keystone-service
       keystone_service_name: heat
       keystone_service_type: orchestration
       keystone_endpoint_public: "{{ heat_keystone_endpoint_orchestration_public }}"
       keystone_endpoint_internal: "{{ heat_keystone_endpoint_orchestration_internal }}"
       keystone_endpoint_admin: "{{ heat_keystone_endpoint_orchestration_admin }}"
 
-    - name: keystone-service
+    - role: keystone-service
       keystone_service_name: heat-cfn
       keystone_service_type: cloudformation
       keystone_endpoint_public: "{{ heat_keystone_endpoint_cloudformation_public }}"
       keystone_endpoint_internal: "{{ heat_keystone_endpoint_cloudformation_internal }}"
       keystone_endpoint_admin: "{{ heat_keystone_endpoint_cloudformation_admin }}"
 
-    - name: keystone-user
+    - role: keystone-user
       keystone_user: "{{ heat_keystone_user }}"
       keystone_password: "{{ heat_keystone_password }}"
       keystone_project: "{{ heat_keystone_project }}"
@@ -57,14 +57,14 @@
 
 - hosts: mysql
   roles:
-    - name: mysql-service
+    - role: mysql-service
       mysql_service_db: "{{ heat_mysql_db }}"
       mysql_service_user: "{{ heat_mysql_user }}"
       mysql_service_password: "{{ heat_mysql_password }}"
 
 - hosts: rabbitmq
   roles:
-    - name: rabbitmq-service
+    - role: rabbitmq-service
       rabbitmq_vhost: "{{ heat_rabbitmq_vhost }}"
       rabbitmq_user: "{{ heat_rabbitmq_user }}"
       rabbitmq_password: "{{ heat_rabbitmq_password }}"

@@ -16,7 +16,7 @@
 
 - hosts: mysql
   roles:
-    - name: mysql-service
+    - role: mysql-service
       mysql_service_db: "{{ keystone_mysql_db }}"
       mysql_service_user: "{{ keystone_mysql_user }}"
       mysql_service_password: "{{ keystone_mysql_password }}"

@@ -12,21 +12,21 @@
 
 - hosts: keystone
   roles:
-    - name: keystone-service
+    - role: keystone-service
       keystone_service_name: glance
       keystone_service_type: image
       keystone_endpoint_public: "{{ glance_keystone_endpoint_image_public }}"
       keystone_endpoint_internal: "{{ glance_keystone_endpoint_image_internal }}"
       keystone_endpoint_admin: "{{ glance_keystone_endpoint_image_admin }}"
 
-    - name: keystone-user
+    - role: keystone-user
       keystone_user: "{{ glance_keystone_user }}"
       keystone_password: "{{ glance_keystone_password }}"
       keystone_project: "{{ glance_keystone_project }}"
 
 - hosts: mysql
   roles:
-    - name: mysql-service
+    - role: mysql-service
       mysql_service_db: "{{ glance_mysql_db }}"
       mysql_service_user: "{{ glance_mysql_user }}"
       mysql_service_password: "{{ glance_mysql_password }}"

@@ -17,28 +17,28 @@
 
 - hosts: keystone
   roles:
-    - name: keystone-service
+    - role: keystone-service
       keystone_service_name: nova
       keystone_service_type: compute
       keystone_endpoint_public: "{{ nova_keystone_endpoint_compute_public }}"
       keystone_endpoint_internal: "{{ nova_keystone_endpoint_compute_internal }}"
       keystone_endpoint_admin: "{{ nova_keystone_endpoint_compute_admin }}"
 
-    - name: keystone-user
+    - role: keystone-user
       keystone_user: "{{ nova_keystone_user }}"
       keystone_password: "{{ nova_keystone_password }}"
       keystone_project: "{{ nova_keystone_project }}"
 
 - hosts: mysql
   roles:
-    - name: mysql-service
+    - role: mysql-service
       mysql_service_db: "{{ nova_mysql_db }}"
       mysql_service_user: "{{ nova_mysql_user }}"
       mysql_service_password: "{{ nova_mysql_password }}"
 
 - hosts: rabbitmq
   roles:
-    - name: rabbitmq-service
+    - role: rabbitmq-service
       rabbitmq_vhost: "{{ nova_rabbitmq_vhost }}"
       rabbitmq_user: "{{ nova_rabbitmq_user }}"
       rabbitmq_password: "{{ nova_rabbitmq_password }}"
@@ -53,6 +53,7 @@
       run_once: yes
       command: ceph auth get-key client.cinder
       register: ceph_cinder_key
+      changed_when: false
 
 - hosts: nova-compute
   pre_tasks:

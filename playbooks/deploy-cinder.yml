@@ -7,35 +7,35 @@
 
 - hosts: keystone
   roles:
-    - name: keystone-service
+    - role: keystone-service
       keystone_service_name: cinder
       keystone_service_type: volume
       keystone_endpoint_public: "{{ cinder_keystone_endpoint_volume_public }}"
       keystone_endpoint_internal: "{{ cinder_keystone_endpoint_volume_internal }}"
       keystone_endpoint_admin: "{{ cinder_keystone_endpoint_volume_admin }}"
 
-    - name: keystone-service
+    - role: keystone-service
       keystone_service_name: cinderv2
       keystone_service_type: volumev2
       keystone_endpoint_public: "{{ cinder_keystone_endpoint_volumev2_public }}"
       keystone_endpoint_internal: "{{ cinder_keystone_endpoint_volumev2_internal }}"
       keystone_endpoint_admin: "{{ cinder_keystone_endpoint_volumev2_admin }}"
 
-    - name: keystone-user
+    - role: keystone-user
       keystone_user: "{{ cinder_keystone_user }}"
       keystone_password: "{{ cinder_keystone_password }}"
       keystone_project: "{{ cinder_keystone_project }}"
 
 - hosts: mysql
   roles:
-    - name: mysql-service
+    - role: mysql-service
       mysql_service_db: "{{ cinder_mysql_db }}"
       mysql_service_user: "{{ cinder_mysql_user }}"
       mysql_service_password: "{{ cinder_mysql_password }}"
 
 - hosts: rabbitmq
   roles:
-    - name: rabbitmq-service
+    - role: rabbitmq-service
       rabbitmq_vhost: "{{ cinder_rabbitmq_vhost }}"
       rabbitmq_user: "{{ cinder_rabbitmq_user }}"
       rabbitmq_password: "{{ cinder_rabbitmq_password }}"

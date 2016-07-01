@@ -7,28 +7,28 @@
 
 - hosts: keystone
   roles:
-    - name: keystone-service
+    - role: keystone-service
       keystone_service_name: neutron
       keystone_service_type: network
       keystone_endpoint_public: "{{ neutron_keystone_endpoint_network_public }}"
       keystone_endpoint_internal: "{{ neutron_keystone_endpoint_network_internal }}"
       keystone_endpoint_admin: "{{ neutron_keystone_endpoint_network_admin }}"
 
-    - name: keystone-user
+    - role: keystone-user
       keystone_user: "{{ neutron_keystone_user }}"
       keystone_password: "{{ neutron_keystone_password }}"
       keystone_project: "{{ neutron_keystone_project }}"
 
 - hosts: mysql
   roles:
-    - name: mysql-service
+    - role: mysql-service
       mysql_service_db: "{{ neutron_mysql_db }}"
       mysql_service_user: "{{ neutron_mysql_user }}"
       mysql_service_password: "{{ neutron_mysql_password }}"
 
 - hosts: rabbitmq
   roles:
-    - name: rabbitmq-service
+    - role: rabbitmq-service
       rabbitmq_vhost: "{{ neutron_rabbitmq_vhost }}"
       rabbitmq_user: "{{ neutron_rabbitmq_user }}"
       rabbitmq_password: "{{ neutron_rabbitmq_password }}"
@@ -46,6 +46,6 @@
 - hosts: nova-compute
   roles:
     - neutron-openvswitch-agent
-    - name: neutron-l3-agent
+    - role: neutron-l3-agent
       neutron_l3_agent_mode: dvr
       when: neutron_l3_distributed
