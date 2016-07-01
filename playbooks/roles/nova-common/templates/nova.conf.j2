@@ -10,9 +10,7 @@ my_ip = {{ openstack_internal_address }}
 
 host = {{ ansible_fqdn }}
 
-network_api_class = nova.network.neutronv2.api.API
-security_group_api = neutron
-linuxnet_interface_driver = nova.network.linux_net.LinuxOVSInterfaceDriver
+use_neutron = True
 firewall_driver = nova.virt.firewall.NoopFirewallDriver
 
 enabled_apis = osapi_compute, metadata
@@ -36,7 +34,13 @@ memcached_servers = {% for host in groups[openstack_group_memcached] -%}
 [conductor]
 workers = {{ nova_conductor_workers }}
 
+[cinder]
+os_region_name = {{ openstack_region }}
+
 {% if inventory_hostname in groups[openstack_group_nova_controller] %}
+[api_database]
+connection = mysql+pymysql://{{ nova_mysql_user }}:{{ nova_mysql_password }}@{{ openstack_lb_vip }}/{{ nova_mysql_api_db }}
+
 [database]
 connection = mysql+pymysql://{{ nova_mysql_user }}:{{ nova_mysql_password }}@{{ openstack_lb_vip }}/{{ nova_mysql_db }}
 {% endif %}
@@ -53,6 +57,10 @@ user_domain_id = default
 project_name = {{ nova_keystone_project }}
 username = {{ nova_keystone_user }}
 password = {{ nova_keystone_password }}
+
+memcached_servers = {% for host in groups[openstack_group_memcached] -%}
+{{ hostvars[host].ansible_fqdn }}{% if not loop.last %},{% endif %}
+{%- endfor %}
 
 [neutron]
 url = {{ neutron_keystone_endpoint_network_internal }}

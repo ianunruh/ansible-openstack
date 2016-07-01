@@ -36,6 +36,11 @@
       mysql_service_user: "{{ nova_mysql_user }}"
       mysql_service_password: "{{ nova_mysql_password }}"
 
+    - role: mysql-service
+      mysql_service_db: "{{ nova_mysql_api_db }}"
+      mysql_service_user: "{{ nova_mysql_user }}"
+      mysql_service_password: "{{ nova_mysql_password }}"
+
 - hosts: rabbitmq
   roles:
     - role: rabbitmq-service

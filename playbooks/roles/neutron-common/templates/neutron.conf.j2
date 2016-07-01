@@ -8,6 +8,8 @@ auth_strategy = keystone
 
 host = {{ ansible_fqdn }}
 
+api_workers = {{ neutron_api_workers }}
+
 notify_nova_on_port_status_changes = True
 notify_nova_on_port_data_changes = True
 nova_url = http://{{ openstack_lb_vip }}:8774/v2
@@ -42,6 +44,10 @@ user_domain_id = default
 project_name = {{ neutron_keystone_project }}
 username = {{ neutron_keystone_user }}
 password = {{ neutron_keystone_password }}
+
+memcached_servers = {% for host in groups[openstack_group_memcached] -%}
+{{ hostvars[host].ansible_fqdn }}{% if not loop.last %},{% endif %}
+{%- endfor %}
 
 [nova]
 auth_url = {{ keystone_auth_url }}

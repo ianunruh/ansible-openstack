@@ -5,7 +5,7 @@
 
 - name: add apt repository
   apt_repository:
-    repo: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu trusty-updates/liberty main"
+    repo: "deb http://ubuntu-cloud.archive.canonical.com/ubuntu trusty-updates/mitaka main"
     update_cache: yes
 
 - name: install openstack client

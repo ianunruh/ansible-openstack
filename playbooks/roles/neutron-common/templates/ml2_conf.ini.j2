@@ -12,3 +12,6 @@ network_vlan_ranges = {{ neutron_ml2_vlan_networks|join(',') }}
 
 [ml2_type_vxlan]
 vni_ranges = {{ neutron_ml2_vxlan_ranges|join(',') }}
+
+[securitygroup]
+enable_ipset = True

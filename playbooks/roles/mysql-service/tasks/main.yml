@@ -11,4 +11,5 @@
     host: "%"
     password: "{{ mysql_service_password }}"
     priv: "{{ mysql_service_db }}.*:ALL"
+    append_privs: yes
     state: present

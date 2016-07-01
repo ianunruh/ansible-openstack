@@ -1,1 +1,2 @@
 horizon_secret_key: secret
+horizon_tz: UTC

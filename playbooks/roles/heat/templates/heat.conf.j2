@@ -33,6 +33,10 @@ project_name = {{ heat_keystone_project }}
 username = {{ heat_keystone_user }}
 password = {{ heat_keystone_password }}
 
+memcached_servers = {% for host in groups[openstack_group_memcached] -%}
+{{ hostvars[host].ansible_fqdn }}{% if not loop.last %},{% endif %}
+{%- endfor %}
+
 [trustee]
 auth_uri = {{ keystone_auth_uri }}
 auth_url = {{ keystone_auth_url }}
